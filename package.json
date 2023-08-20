@@ -7,9 +7,9 @@
     "private": true,
     "scripts": {
         "lint": "prettier . -w",
-        "prepare": "husky install",
         "lang:sync": "node ./scripts/syncLanguages.mjs",
-        "lang:translate": ""
+        "lang:translate": "",
+        "prepare": "husky install"
     },
     "dependencies": {
         "discord.js": "^14.11.0",
@@ -30,5 +30,8 @@
         "pg": "^8.11.3",
         "pg-hstore": "^2.3.4",
         "sqlite3": "^5.1.6"
+    },
+    "lint-staged": {
+        "*.{js,css,md}": "prettier --write"
     }
 }
