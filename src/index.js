@@ -1,6 +1,6 @@
-import { config } from 'dotenv'
+import { config } from 'dotenv';
 
-import { Pogbot } from './client.js'
+import { Pogbot } from './client.js';
 
-config()
-new Pogbot(process.env.TOKEN)
+config();
+new Pogbot(process.env.TOKEN);

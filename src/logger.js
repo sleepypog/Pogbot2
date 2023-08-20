@@ -1,4 +1,4 @@
-import winston, { createLogger } from 'winston'
+import winston, { createLogger } from 'winston';
 
 /*** @returns {import('winston').Logger} */
 export function getLogger() {
@@ -9,5 +9,5 @@ export function getLogger() {
             winston.format.simple()
         ),
         transports: [new winston.transports.Console()],
-    })
+    });
 }

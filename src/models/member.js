@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes } from 'sequelize';
 
 export function Member() {
     return {
@@ -18,5 +18,5 @@ export function Member() {
             type: DataTypes.NUMBER,
             defaultValue: 0,
         },
-    }
+    };
 }

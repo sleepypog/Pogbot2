@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes } from 'sequelize';
 
 export function Guild() {
     return {
@@ -13,12 +13,12 @@ export function Guild() {
         channels: {
             type: DataTypes.STRING,
             get() {
-                const rawValue = this.getDataValue('channels')
-                return rawValue ? rawValue.split(',') : []
+                const rawValue = this.getDataValue('channels');
+                return rawValue ? rawValue.split(',') : [];
             },
             set(channels) {
-                this.setDataValue('channels', channels.join(','))
+                this.setDataValue('channels', channels.join(','));
             },
         },
-    }
+    };
 }

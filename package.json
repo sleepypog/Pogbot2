@@ -6,7 +6,10 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "lint": "prettier ."
+        "lint": "prettier . -w",
+        "prepare": "husky install",
+        "lang:sync": "node ./scripts/syncLanguages.mjs",
+        "lang:translate": ""
     },
     "dependencies": {
         "discord.js": "^14.11.0",
@@ -18,7 +21,9 @@
     },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.2.0",
+        "husky": "^8.0.0",
         "prettier": "^3.0.2",
+        "pretty-quick": "^3.1.3",
         "sqlite3": "^5.1.6"
     },
     "optionalDependencies": {

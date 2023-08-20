@@ -7,17 +7,19 @@ import {
     EmbedBuilder,
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder,
-} from 'discord.js'
+} from 'discord.js';
 
-import { Pogbot } from '../client.js'
-import { Translation } from '../translation.js'
+import { Pogbot } from '../client.js';
+import { Translation } from '../translation.js';
 
 /** @type {import('../client').Command} */
 export default function About() {
     return {
         name: 'about',
         guildOnly: false,
-        data: new SlashCommandBuilder().setDescription('Test'),
+        data: new SlashCommandBuilder().setDescription(
+            'See information about Pogbot'
+        ),
         /** @param {CommandInteraction} i  */
         async execute(i) {
             await i.reply({
@@ -51,7 +53,7 @@ export default function About() {
                             .setURL('https://github.com'),
                     ]),
                 ],
-            })
+            });
         },
-    }
+    };
 }
