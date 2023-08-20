@@ -7,9 +7,11 @@ import {
     ButtonBuilder,
     ButtonStyle,
     Emoji,
+    ChannelSelectMenuBuilder,
+    ChannelType,
 } from 'discord.js';
 
-import { Pogbot } from '../client';
+import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
 import { Translation } from '../translation.js';
 
@@ -93,6 +95,11 @@ export default function Channels() {
                         ],
                         ephemeral: true,
                     });
+                    Pogbot.getInstance().addFollowUp(
+                        i.channelId,
+                        i.user.id,
+                        'channels'
+                    );
                     break;
                 }
             }
@@ -102,11 +109,79 @@ export default function Channels() {
             if (i.isButton()) {
                 switch (i.component.customId) {
                     case 'channelAdd': {
-                        // TODO: Select menus.
+                        await i.guild.channels.fetch();
+
+                        await i.reply({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle(
+                                        Translation.t(
+                                            i.locale,
+                                            'channelAddSelectTitle'
+                                        )
+                                    )
+                                    .setDescription(
+                                        Translation.t(
+                                            i.locale,
+                                            'channelAddSelect'
+                                        )
+                                    ),
+                            ],
+                            ephemeral: true,
+                            components: [
+                                new ActionRowBuilder().setComponents([
+                                    new ChannelSelectMenuBuilder()
+                                        .setCustomId('channelAddSelect')
+                                        .setChannelTypes(ChannelType.GuildText)
+                                        .setMinValues(1)
+                                        .setMaxValues(10),
+                                ]),
+                            ],
+                        });
+
+                        Pogbot.getInstance().addFollowUp(
+                            i.channelId,
+                            i.user.id,
+                            'channels'
+                        );
+
                         break;
                     }
                     case 'channelRemove': {
                         break;
+                    }
+                }
+                Pogbot.getInstance().addFollowUp(i.channel, i.user, 'channels');
+            } else if (i.isChannelSelectMenu()) {
+                const [guild] = await PogDB.getInstance().getGuild(i.guild);
+                const channels = guild.channels;
+
+                switch (i.component.customId) {
+                    case 'channelAddSelect': {
+                        const selected = i.channels.map((c) => c.id);
+
+                        selected.forEach((c, i) => {
+                            // Prevent duplicates.
+                            if (channels.includes(c)) {
+                                delete selected[i];
+                                return;
+                            }
+
+                            channels.push(c);
+                        });
+
+                        await guild.update({ channels: channels });
+                        await i.reply({
+                            content: Translation.t(
+                                i.locale,
+                                'channelAdded',
+                                selected.length
+                            ),
+                            ephemeral: true,
+                        });
+                        break;
+                    }
+                    case 'channelRemoveSelect': {
                     }
                 }
             }

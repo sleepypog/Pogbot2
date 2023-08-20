@@ -21,7 +21,9 @@ export class PogDB {
 
         this.#client = client;
 
-        this.#sequelize = new Sequelize(process.env.DATABASE_URL);
+        this.#sequelize = new Sequelize(process.env.DATABASE_URL, {
+            logging: false,
+        });
         this.#sequelize
             .authenticate()
             .then(() => {

@@ -5,6 +5,7 @@ import {
     Guild,
     IntentsBitField,
     SlashCommandBuilder,
+    User,
 } from 'discord.js';
 import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
@@ -46,8 +47,8 @@ export class Pogbot extends Client {
     /** @type {Collection<string, Command>} */
     #commands;
 
-    /** @type {Collection<string, Function>} */
-    #followUp;
+    /** @type {Collection<string, string>} */
+    #waitingFollowUps;
 
     /** @type {Collection<string, PogListener>} */
     #activePogs;
@@ -62,6 +63,8 @@ export class Pogbot extends Client {
         this.logger = getLogger();
         this.localization = new Translation();
         this.#database = new PogDB(this);
+
+        this.#waitingFollowUps = new Collection();
 
         this.#setupListeners();
 
@@ -95,14 +98,11 @@ export class Pogbot extends Client {
                 followUp,
             } = command();
 
-            if (followUp !== undefined) {
-                this.#followUp.set(name, followUp);
-            }
             // Configure values from the command object.
             builder.setName(name).setDMPermission(!guildOnly);
 
             this.application.commands.create(builder.toJSON());
-            this.#commands.set(name, execute);
+            this.#commands.set(name, command());
             this.logger.silly(
                 `Registered application command "${name}". [entry ${
                     i + 1
@@ -127,21 +127,27 @@ export class Pogbot extends Client {
     }
 
     /**
-     * @param {import("discord.js").Interaction} i
+     * @param {import("discord.js").ChannelSelectMenuInteraction} i
      */
     async #interaction(i) {
         if (i.isCommand()) {
             if (this.#commands.has(i.commandName)) {
                 try {
                     const command = this.#commands.get(i.commandName);
-                    await command(i);
+                    await command.execute(i);
                 } catch (e) {
                     this.logger.error(
                         `Something went wrong executing command ${i.commandName}\n${e.stack}`
                     );
-                    await i.reply(
-                        `Whoops! Could not run this command due to an error: \`${e}\``
-                    );
+                    if (i.replied) {
+                        await i.editReply(
+                            Translation.t('commandError', e.toString())
+                        );
+                    } else {
+                        await i.reply(
+                            Translation.t('commandError', e.toString())
+                        );
+                    }
                 }
             } else {
                 this.logger.error(
@@ -149,8 +155,12 @@ export class Pogbot extends Client {
                 );
             }
         } else {
-            if (this.#followUp.has(i.commandName)) {
-                await this.#followUp.get(i.commandName)();
+            const followUp = this.#waitingFollowUps.get(
+                `${i.channelId}-${i.user.id}`
+            );
+            if (followUp !== undefined) {
+                this.#commands.get(followUp).followUp(i);
+                this.#waitingFollowUps.delete(`${i.channelId}-${i.user.id}`);
             }
         }
     }
@@ -159,6 +169,22 @@ export class Pogbot extends Client {
     #guildJoin(g) {}
 
     #message() {}
+
+    /**
+     * Add an follow up, this is used to identify whenever interactions belong to an same execution.
+     * @param {string} channel
+     * @param {string} member
+     * @param {string} command
+     * @returns {boolean} Depending on whenever the follow up could be added or not.
+     */
+    addFollowUp(channel, member, command) {
+        if (this.#waitingFollowUps.has(`${channel}-${member}`)) {
+            return false;
+        }
+
+        this.#waitingFollowUps.set(`${channel}-${member}`, command);
+        return true;
+    }
 
     static getInstance() {
         return Pogbot.#instance;

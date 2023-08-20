@@ -25,19 +25,17 @@ export default function About() {
             await i.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle('About Pogbot')
-                        .setDescription(
-                            'Pogbot is an open source bot created with the purpose of promoting competition within your community.'
-                        )
+                        .setTitle(Translation.t(i.locale, 'aboutTitle'))
+                        .setDescription(Translation.t(i.locale, 'about'))
                         .addFields([
                             {
-                                name: 'Guilds',
+                                name: Translation.t(i.locale, 'guilds'),
                                 value: Pogbot.getInstance().guilds.cache.size.toString(),
                                 inline: true,
                             },
                             {
-                                name: 'Uptime',
-                                value: Localization.d(
+                                name: Translation.t(i.locale, 'uptime'),
+                                value: Translation.d(
                                     Pogbot.getInstance()?.uptime
                                 ),
                                 inline: true,
