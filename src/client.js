@@ -12,7 +12,7 @@ import { Logger } from 'winston';
 
 import { PogDB } from './database.js';
 import { getLogger } from './logger.js';
-import { Translation } from './translation.js';
+import { Translation } from './utils/translation.js';
 
 /***
  * Structure of an command module.
@@ -90,13 +90,7 @@ export class Pogbot extends Client {
             }
 
             /** @type {Command} */
-            const {
-                name,
-                guildOnly,
-                data: builder,
-                execute,
-                followUp,
-            } = command();
+            const { name, guildOnly, data: builder } = command();
 
             // Configure values from the command object.
             builder.setName(name).setDMPermission(!guildOnly);
@@ -141,11 +135,19 @@ export class Pogbot extends Client {
                     );
                     if (i.replied) {
                         await i.editReply(
-                            Translation.t('commandError', e.toString())
+                            Translation.t(
+                                i.locale,
+                                'commandError',
+                                e.toString()
+                            )
                         );
                     } else {
                         await i.reply(
-                            Translation.t('commandError', e.toString())
+                            Translation.t(
+                                i.locale,
+                                'commandError',
+                                e.toString()
+                            )
                         );
                     }
                 }

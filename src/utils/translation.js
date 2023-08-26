@@ -3,7 +3,7 @@ import { readdirSync } from 'node:fs';
 import prettyMilliseconds from 'pretty-ms';
 import { sprintf } from 'sprintf-js';
 
-import { Pogbot } from './client.js';
+import { Pogbot } from '../client.js';
 
 export const DEFAULT_LOCALE = 'en';
 
@@ -28,7 +28,7 @@ export class Translation {
             f.endsWith('.json')
         );
         strings.forEach(async (l, i) => {
-            const { default: language } = await import(`../lang/${l}`, {
+            const { default: language } = await import(`../../lang/${l}`, {
                 assert: {
                     type: 'json',
                 },

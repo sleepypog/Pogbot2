@@ -4,7 +4,7 @@
  * @param {number} len Chunk size
  * @returns Array with chunks.
  */
-function asChunks(arr, len) {
+export function asChunks(arr, len) {
     let chunks = [];
     let i = 0;
     let n = arr.length;

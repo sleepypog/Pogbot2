@@ -4,13 +4,15 @@
     "channelEditTitle": "Edit Pog Channels",
     "channelAdd": "Add channel",
     "channelRemove": "Remove channel",
-    "channelAddSelectTitle": "Select an channel",
-    "channelAddSelect": "Select an channel from the menu below.",
+    "channelSelectTitle": "Select an channel",
+    "channelSelect": "Select an channel from the menu below.",
     "channelAdded": "Added %d channels as Pog channels.",
+    "channelRemoved": "Removed %d channels as Pog channels",
     "score": "You have %d pogs in this guild.",
     "guilds": "Guilds",
     "uptime": "Uptime",
     "aboutTitle": "About Pogbot",
     "about": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
+    "leaderboardTitle": "Leaderboard for %s",
     "commandError": "Whoops! Could not execute this command due to an error.\n`%s`"
 }

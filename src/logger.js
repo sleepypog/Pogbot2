@@ -3,7 +3,7 @@ import winston, { createLogger } from 'winston';
 /*** @returns {import('winston').Logger} */
 export function getLogger() {
     return createLogger({
-        level: 'silly',
+        level: process.env.DEBUG ? 'silly' : 'info',
         format: winston.format.combine(
             winston.format.colorize(),
             winston.format.simple()

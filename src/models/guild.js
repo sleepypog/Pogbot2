@@ -2,9 +2,10 @@ import { DataTypes } from 'sequelize';
 
 export function Guild() {
     return {
-        guildId: {
+        id: {
             type: DataTypes.STRING,
             primaryKey: true,
+            unique: true,
         },
         /*
          * Channels is stored as an single string, as it allows the usage of database

@@ -1,16 +1,14 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonComponent,
     ButtonStyle,
     CommandInteraction,
     EmbedBuilder,
     SlashCommandBuilder,
-    SlashCommandSubcommandBuilder,
 } from 'discord.js';
 
 import { Pogbot } from '../client.js';
-import { Translation } from '../translation.js';
+import { Translation } from '../utils/translation.js';
 
 /** @type {import('../client').Command} */
 export default function About() {

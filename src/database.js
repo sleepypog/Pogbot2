@@ -1,7 +1,6 @@
 import { Guild, GuildMember } from 'discord.js';
 import { Model, Sequelize } from 'sequelize';
 
-import { Pogbot } from './client.js';
 import { Guild as GuildModel } from './models/guild.js';
 import { Member as MemberModel } from './models/member.js';
 
@@ -13,7 +12,10 @@ export class PogDB {
 
     #sequelize;
 
+    /** @type {Model} */
     member;
+
+    /** @type {Model} */
     guild;
 
     constructor(client) {
@@ -45,13 +47,9 @@ export class PogDB {
         const M = this.#sequelize.define('Member', MemberModel(), {
             timestamps: false,
         });
+
         const G = this.#sequelize.define('Guild', GuildModel(), {
             timestamps: false,
-        });
-
-        M.belongsTo(G);
-        G.hasMany(M, {
-            as: 'guild',
         });
 
         this.member = M;
@@ -66,20 +64,37 @@ export class PogDB {
     async getGuild(g) {
         return await this.guild.findOrCreate({
             where: {
-                guildId: g.id,
+                id: g.id,
             },
-        });
+        })[0];
     }
 
     /**
      * Get an PogDB member from an discord.js guild member.
      * @param {GuildMember} member
+     * @returns {Promise<Model<MemberModel>>}
      */
     async getMember(member) {
-        return await this.member.findOrCreate({
+        return (
+            await this.member.findOrCreate({
+                where: {
+                    userId: member.user.id,
+                    guildId: member.guild.id,
+                },
+            })
+        )[0];
+    }
+
+    /**
+     * Get an array with scores for an guild, sorted from highest to lowest.
+     * @param {Guild} g Guild id
+     * @returns {Promise<Model<MemberModel>[]>}
+     */
+    async getTopScores(g) {
+        return await this.member.findAll({
+            order: [['score', 'DESC']],
             where: {
-                userId: member.user.id,
-                guildId: member.guild.id,
+                guildId: g.id,
             },
         });
     }

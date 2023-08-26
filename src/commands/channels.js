@@ -9,11 +9,13 @@ import {
     Emoji,
     ChannelSelectMenuBuilder,
     ChannelType,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
 } from 'discord.js';
 
 import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
-import { Translation } from '../translation.js';
+import { Translation } from '../utils/translation.js';
 
 /** @type {import('../client').Command} */
 export default function Channels() {
@@ -36,7 +38,7 @@ export default function Channels() {
             ),
         /** @param {CommandInteraction} i  */
         async execute(i) {
-            const [guild] = await PogDB.getInstance().getGuild(i.guild);
+            const guild = await PogDB.getInstance().getGuild(i.guild);
             const channels = guild.channels;
             // TODO: Permission checks
 
@@ -116,6 +118,8 @@ export default function Channels() {
         },
         /** @param {import('discord.js').Interaction} i */
         async followUp(i) {
+            const [guild] = await PogDB.getInstance().getGuild(i.guild);
+            const channels = guild.channels;
             if (i.isButton()) {
                 switch (i.component.customId) {
                     case 'channelAdd': {
@@ -158,42 +162,81 @@ export default function Channels() {
                         break;
                     }
                     case 'channelRemove': {
+                        const menus = new ActionRowBuilder();
+
+                        asChunks(channels, 24).forEach((chunk) => {
+                            const selectMenu = new StringSelectMenuBuilder();
+                            chunk.forEach(async (c) => {
+                                const channel = await i.guild.channels.fetch(c);
+                                selectMenu.addOptions([
+                                    new StringSelectMenuOptionBuilder()
+                                        .setLabel(channel.name)
+                                        .setDescription(channel.parent.name)
+                                        .setValue(channel.id)
+                                        .setEmoji('#️⃣'),
+                                ]);
+                            });
+                        });
+
+                        await i.reply({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle(
+                                        Translation.t(
+                                            i.locale,
+                                            'channelSelectTitle'
+                                        )
+                                    )
+                                    .setDescription(
+                                        Translation.t(i.locale, 'channelSelect')
+                                    ),
+                            ],
+                            ephemeral: true,
+                            components: [menus],
+                        });
+
                         break;
                     }
                 }
                 Pogbot.getInstance().addFollowUp(i.channel, i.user, 'channels');
             } else if (i.isChannelSelectMenu()) {
-                const [guild] = await PogDB.getInstance().getGuild(i.guild);
-                const channels = guild.channels;
+                if (i.component.customId === 'channelAddSelect') {
+                    const selected = i.channels.map((c) => c.id);
 
-                switch (i.component.customId) {
-                    case 'channelAddSelect': {
-                        const selected = i.channels.map((c) => c.id);
+                    selected.forEach((c, i) => {
+                        // Prevent duplicates.
+                        if (channels.includes(c)) {
+                            delete selected[i];
+                            return;
+                        }
 
-                        selected.forEach((c, i) => {
-                            // Prevent duplicates.
-                            if (channels.includes(c)) {
-                                delete selected[i];
-                                return;
-                            }
+                        channels.push(c);
+                    });
 
-                            channels.push(c);
-                        });
-
-                        await guild.update({ channels: channels });
-                        await i.reply({
-                            content: Translation.t(
-                                i.locale,
-                                'channelAdded',
-                                selected.length
-                            ),
-                            ephemeral: true,
-                        });
-                        break;
-                    }
-                    case 'channelRemoveSelect': {
-                    }
+                    await guild.update({ channels: channels });
+                    await i.reply({
+                        content: Translation.t(
+                            i.locale,
+                            'channelAdded',
+                            selected.length
+                        ),
+                        ephemeral: true,
+                    });
                 }
+            } else if (i.isStringSelectMenu()) {
+                const selected = i.values();
+
+                channels = channels.filter((c) => !selected.includes(c));
+                await guild.update({ channels: channels });
+
+                await i.reply({
+                    content: Translation.t(
+                        i.locale,
+                        'channelRemoved',
+                        selected.length
+                    ),
+                    ephemeral: true,
+                });
             }
         },
     };
