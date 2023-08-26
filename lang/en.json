@@ -1,6 +1,6 @@
 {
     "channelListTitle": "Pog Channels",
-    "channelListEmpty": "%s has not configured any channel as an pog channel.",
+    "channelListEmpty": "This guild has not configured any channel as an pog channel.",
     "channelEditTitle": "Edit Pog Channels",
     "channelAdd": "Add channel",
     "channelRemove": "Remove channel",

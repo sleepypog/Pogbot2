@@ -46,13 +46,18 @@ export default function Channels() {
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle(
-                                    Translation.t('en', 'channelListTitle')
+                                    Translation.t(i.locale, 'channelListTitle')
                                 )
                                 .setDescription(
                                     `${
                                         channels.length === 0
-                                            ? 'This guild has not configured any pog channels.'
-                                            : formatChannels(channels)
+                                            ? Translation.t(
+                                                  i.locale,
+                                                  'channelListEmpty'
+                                              )
+                                            : formatChannels(channels).join(
+                                                  '\n'
+                                              )
                                     }`
                                 ),
                         ],
@@ -64,13 +69,18 @@ export default function Channels() {
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle(
-                                    Translation.t('en', 'channelEditTitle')
+                                    Translation.t(i.locale, 'channelEditTitle')
                                 )
                                 .setDescription(
                                     `${
                                         channels.length === 0
-                                            ? 'This guild has not configured any pog channels.'
-                                            : formatChannels(channels)
+                                            ? Translation.t(
+                                                  i.locale,
+                                                  'channelListEmpty'
+                                              )
+                                            : formatChannels(channels).join(
+                                                  '\n'
+                                              )
                                     }`
                                 ),
                         ],
@@ -194,8 +204,6 @@ export default function Channels() {
  * @param {string[]} channels Channel IDs
  */
 function formatChannels(channels) {
-    channels.map((value) => {
-        return `<#${value}>\n`;
-    });
+    channels.map((value) => `- <#${value}>`);
     return channels;
 }
