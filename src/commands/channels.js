@@ -6,15 +6,16 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-    Emoji,
     ChannelSelectMenuBuilder,
     ChannelType,
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
+    PermissionFlagsBits,
 } from 'discord.js';
 
 import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
+import { asChunks } from '../utils/array.js';
 import { Translation } from '../utils/translation.js';
 
 /** @type {import('../client').Command} */
@@ -23,7 +24,7 @@ export default function Channels() {
         name: 'channels',
         guildOnly: true,
         data: new SlashCommandBuilder()
-            .setDescription('List and edit configured pog channels.')
+            .setDescription('List and edit channels that will wake up the bot.')
             .addSubcommand(
                 new SlashCommandSubcommandBuilder()
                     .setName('list')
@@ -35,12 +36,12 @@ export default function Channels() {
                     .setDescription(
                         'Edit the list of pog channels for this server.'
                     )
-            ),
+            )
+            .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
         /** @param {CommandInteraction} i  */
         async execute(i) {
             const guild = await PogDB.getInstance().getGuild(i.guild);
-            const channels = guild.channels;
-            // TODO: Permission checks
+            const channels = guild.get('channels');
 
             switch (i.options.getSubcommand()) {
                 case 'list': {
@@ -63,6 +64,7 @@ export default function Channels() {
                                     }`
                                 ),
                         ],
+                        ephemeral: true,
                     });
                     break;
                 }
@@ -118,7 +120,7 @@ export default function Channels() {
         },
         /** @param {import('discord.js').Interaction} i */
         async followUp(i) {
-            const [guild] = await PogDB.getInstance().getGuild(i.guild);
+            const guild = await PogDB.getInstance().getGuild(i.guild);
             const channels = guild.channels;
             if (i.isButton()) {
                 switch (i.component.customId) {
@@ -131,14 +133,11 @@ export default function Channels() {
                                     .setTitle(
                                         Translation.t(
                                             i.locale,
-                                            'channelAddSelectTitle'
+                                            'channelSelectTitle'
                                         )
                                     )
                                     .setDescription(
-                                        Translation.t(
-                                            i.locale,
-                                            'channelAddSelect'
-                                        )
+                                        Translation.t(i.locale, 'channelSelect')
                                     ),
                             ],
                             ephemeral: true,
@@ -164,9 +163,14 @@ export default function Channels() {
                     case 'channelRemove': {
                         const menus = new ActionRowBuilder();
 
-                        asChunks(channels, 24).forEach((chunk) => {
-                            const selectMenu = new StringSelectMenuBuilder();
+                        // FIXME: Stopped working out of nowhere, seems like the array is empty.
+                        asChunks(channels, 24).forEach((chunk, chunkI) => {
+                            const selectMenu =
+                                new StringSelectMenuBuilder().setCustomId(
+                                    `chunk${chunkI}`
+                                );
                             chunk.forEach(async (c) => {
+                                console.log(c);
                                 const channel = await i.guild.channels.fetch(c);
                                 selectMenu.addOptions([
                                     new StringSelectMenuOptionBuilder()
@@ -176,8 +180,13 @@ export default function Channels() {
                                         .setEmoji('#️⃣'),
                                 ]);
                             });
+                            menus.addComponents(selectMenu);
                         });
 
+                        /**
+                         * TODO: Fix DiscordAPIError[50035]: Invalid Form Body
+                         * data.components[0].components[BASE_TYPE_BAD_LENGTH]: Must be between 1 and 5 in length.
+                         */
                         await i.reply({
                             embeds: [
                                 new EmbedBuilder()
@@ -224,7 +233,7 @@ export default function Channels() {
                     });
                 }
             } else if (i.isStringSelectMenu()) {
-                const selected = i.values();
+                const selected = i.values;
 
                 channels = channels.filter((c) => !selected.includes(c));
                 await guild.update({ channels: channels });
@@ -244,9 +253,9 @@ export default function Channels() {
 
 /**
  * Format channels IDs into Discord's format and adds an new line.
- * @param {string[]} channels Channel IDs
+ * @param {string[]} c Channel IDs
  */
-function formatChannels(channels) {
-    channels.map((value) => `- <#${value}>`);
-    return channels;
+function formatChannels(c) {
+    c.map((value) => `- <#${value}>`);
+    return c;
 }

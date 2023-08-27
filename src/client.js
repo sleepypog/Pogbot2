@@ -4,15 +4,18 @@ import {
     CommandInteraction,
     Guild,
     IntentsBitField,
+    Message,
     SlashCommandBuilder,
-    User,
 } from 'discord.js';
 import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
 
 import { PogDB } from './database.js';
-import { getLogger } from './logger.js';
+import { PogAnalytics } from './utils/analytics.js';
+import { getLogger } from './utils/logger.js';
 import { Translation } from './utils/translation.js';
+
+// TODO: Move interfaces and type definitions to an TypeScript definition file.
 
 /***
  * Structure of an command module.
@@ -41,9 +44,6 @@ export class Pogbot extends Client {
     /** @type {Translation} */
     localization;
 
-    /** @type {PogbotDatabase} */
-    #database;
-
     /** @type {Collection<string, Command>} */
     #commands;
 
@@ -52,6 +52,9 @@ export class Pogbot extends Client {
 
     /** @type {Collection<string, PogListener>} */
     #activePogs;
+
+    /** @type {PogAnalytics} */
+    analytics;
 
     constructor(token) {
         super({
@@ -62,7 +65,9 @@ export class Pogbot extends Client {
 
         this.logger = getLogger();
         this.localization = new Translation();
-        this.#database = new PogDB(this);
+        this.analytics = new PogAnalytics();
+
+        new PogDB(this);
 
         this.#waitingFollowUps = new Collection();
 
@@ -95,21 +100,30 @@ export class Pogbot extends Client {
             // Configure values from the command object.
             builder.setName(name).setDMPermission(!guildOnly);
 
-            this.application.commands.create(builder.toJSON());
-            this.#commands.set(name, command());
-            this.logger.silly(
-                `Registered application command "${name}". [entry ${
-                    i + 1
-                } out of ${commands.length}]`
-            );
+            try {
+                this.application.commands.create(builder.toJSON());
+                this.#commands.set(name, command());
+                this.logger.silly(
+                    `Registered application command "${name}". [entry ${
+                        i + 1
+                    } out of ${commands.length}]`
+                );
+            } catch (e) {
+                this.logger.error(
+                    `Could not register command ${name} as it has invalid data: ${e.message}`
+                );
+            }
         });
     }
 
+    // TODO: Move events to individual files.
     #setupListeners() {
         this.once('ready', this.#ready);
         this.on('interactionCreate', this.#interaction);
         this.on('messageCreate', this.#message);
         this.on('guildCreate', this.#guildJoin);
+        this.on('guildDelete', this.#guildRemove);
+
         this.logger.debug('Registered listeners.');
     }
 
@@ -161,16 +175,53 @@ export class Pogbot extends Client {
                 `${i.channelId}-${i.user.id}`
             );
             if (followUp !== undefined) {
-                this.#commands.get(followUp).followUp(i);
+                try {
+                    this.#commands.get(followUp).followUp(i);
+                } catch (e) {
+                    this.logger.error(
+                        `Something went wrong executing command follow up ${i.commandName}\n${e.stack}`
+                    );
+                    if (i.replied) {
+                        await i.editReply(
+                            Translation.t(
+                                i.locale,
+                                'commandError',
+                                e.toString()
+                            )
+                        );
+                    } else {
+                        await i.reply(
+                            Translation.t(
+                                i.locale,
+                                'commandError',
+                                e.toString()
+                            )
+                        );
+                    }
+                }
+
                 this.#waitingFollowUps.delete(`${i.channelId}-${i.user.id}`);
             }
         }
     }
 
     /** @param {Guild} g */
-    #guildJoin(g) {}
+    #guildJoin(g) {
+        PogDB.getInstance().getGuild(g); // create the guild in the db
+        this.analytics.addGuild();
+        this.logger.debug(`Joined guild ${g.id}.`);
+    }
 
-    #message() {}
+    /** @param {Guild} g */
+    #guildRemove(g) {
+        this.analytics.removeGuild();
+        this.logger.debug(`Kicked from guild ${g.id}`);
+    }
+
+    /** @param {Message} m */
+    #message(m) {
+        // TODO: Create message event handler
+    }
 
     /**
      * Add an follow up, this is used to identify whenever interactions belong to an same execution.

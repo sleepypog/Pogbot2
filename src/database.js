@@ -4,6 +4,7 @@ import { Model, Sequelize } from 'sequelize';
 import { Guild as GuildModel } from './models/guild.js';
 import { Member as MemberModel } from './models/member.js';
 
+// TODO: Setup Sequelize transactions for database safety.
 export class PogDB {
     /** @type {PogDB} */
     static #instance;
@@ -43,6 +44,7 @@ export class PogDB {
         this.#setupDefinitions();
     }
 
+    // TODO: Setup associations.
     #setupDefinitions() {
         const M = this.#sequelize.define('Member', MemberModel(), {
             timestamps: false,
@@ -62,11 +64,13 @@ export class PogDB {
      * @returns {Promise<Model<GuildModel>>}
      */
     async getGuild(g) {
-        return await this.guild.findOrCreate({
-            where: {
-                id: g.id,
-            },
-        })[0];
+        return (
+            await this.guild.findOrCreate({
+                where: {
+                    id: g.id,
+                },
+            })
+        )[0];
     }
 
     /**
@@ -78,7 +82,7 @@ export class PogDB {
         return (
             await this.member.findOrCreate({
                 where: {
-                    userId: member.user.id,
+                    userId: member.id,
                     guildId: member.guild.id,
                 },
             })

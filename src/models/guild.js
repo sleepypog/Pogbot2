@@ -15,10 +15,23 @@ export function Guild() {
             type: DataTypes.STRING,
             get() {
                 const rawValue = this.getDataValue('channels');
-                return rawValue ? rawValue.split(',') : [];
+                return rawValue ? rawValue.split(';') : [];
             },
-            set(channels) {
-                this.setDataValue('channels', channels.join(','));
+            set(c) {
+                this.setDataValue('channels', c.join(';'));
+            },
+        },
+        /**
+         * Same thing as above.
+         */
+        triggers: {
+            type: DataTypes.STRING,
+            get() {
+                const rawValue = this.getDataValue('triggers');
+                return rawValue ? rawValue.split(';') : [];
+            },
+            set(t) {
+                this.setDataValue('triggers', t.join(';'));
             },
         },
     };

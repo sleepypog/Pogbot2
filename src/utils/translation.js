@@ -49,16 +49,32 @@ export class Translation {
      * @param {String} key
      * @param {...object} args
      */
-    static t(locale, key, ...args) {
-        const loc = Translation.getInstance().#strings.get(
-            locale.split('-')[0]
-        );
-        return loc[key] !== undefined
-            ? sprintf(loc[key], args)
-            : sprintf(
-                  Translation.getInstance().#strings.get(DEFAULT_LOCALE)[key],
-                  args
-              );
+    static t(loc, key, ...args) {
+        let locale = loc.split('-')[0];
+
+        const strings = Translation.getInstance().#strings.get(locale);
+
+        try {
+            if (strings[key] === undefined) {
+                Pogbot.getInstance().logger.silly(
+                    `String '${key}' not found in locale ${locale}, defaulting to ${DEFAULT_LOCALE}`
+                );
+
+                locale = DEFAULT_LOCALE;
+
+                return sprintf(
+                    Translation.getInstance().#strings.get(DEFAULT_LOCALE)[key],
+                    args
+                );
+            } else {
+                return sprintf(strings[key], args);
+            }
+        } catch (error) {
+            Pogbot.getInstance().logger.warn(
+                `Error while formatting string '${key}' in ${locale}: ${error.message}`
+            );
+            return key;
+        }
     }
 
     /**

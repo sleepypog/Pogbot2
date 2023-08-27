@@ -1,0 +1,5 @@
+app = "pogbot"
+
+[metrics]
+port = 7171
+path = "/metrics"

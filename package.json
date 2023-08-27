@@ -29,6 +29,7 @@
     "optionalDependencies": {
         "pg": "^8.11.3",
         "pg-hstore": "^2.3.4",
+        "prom-client": "^14.2.0",
         "sqlite3": "^5.1.6"
     },
     "lint-staged": {

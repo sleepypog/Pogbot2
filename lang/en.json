@@ -8,11 +8,29 @@
     "channelSelect": "Select an channel from the menu below.",
     "channelAdded": "Added %d channels as Pog channels.",
     "channelRemoved": "Removed %d channels as Pog channels",
+
+    "triggerListTitle": "Triggers",
+    "triggerListEmpty": "This guild has not configured any trigger.",
+    "triggerAdd": "Add trigger",
+    "triggerRemove": "Remove trigger",
+    "triggerAddTitle": "Add an trigger",
+    "triggerRemoveTitle": "Remove an trigger",
+    "triggerAddPromptLabel": "Trigger as regular expression.",
+    "triggerAdded": "Added %s as an trigger.",
+    "triggerInvalidCharacter": "Whoops! Could not add trigger because it contains an illegal character. (`;`)",
+    "triggerRemoveEntry": "Remove this entry",
+    "triggerRemoveSelect": "Select an trigger to remove",
+    "triggerRemoved": "Removed trigger `%s`.",
+
     "score": "You have %d pogs in this guild.",
     "guilds": "Guilds",
     "uptime": "Uptime",
     "aboutTitle": "About Pogbot",
     "about": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
+
     "leaderboardTitle": "Leaderboard for %s",
+
+    "scoreEdited": "Done! That user now has %d pogs.",
+
     "commandError": "Whoops! Could not execute this command due to an error.\n`%s`"
 }
