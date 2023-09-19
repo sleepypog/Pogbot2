@@ -1,12 +1,20 @@
+import { createServer } from 'node:http';
 import prom from 'prom-client';
+
+import { Pogbot } from '../client.js';
+
+const ANALYTICS_PORT = 7171;
 
 export class PogAnalytics {
     static instance;
+
+    analyticsServer;
 
     client;
 
     pogCounter;
     guildCounter;
+    apiLatencyHistory;
 
     // TODO: Finish this.
     constructor() {
@@ -18,12 +26,30 @@ export class PogAnalytics {
 
             this.pogCounter = new prom.Counter({
                 name: 'pogbot_pogs',
-                help: 'pogbot_pogs_help',
+                help: 'Number of pogs processed by the current bot instance.',
             });
 
             this.guildCounter = new prom.Gauge({
                 name: 'pogbot_guilds',
-                help: 'pogbot_guilds_help',
+                help: 'Number of guilds where Pogbot is being used.',
+            });
+
+            this.apiLatencyHistory = new prom.Histogram({
+                name: 'discord_api_latency',
+                help: 'Discord API Latency',
+            });
+
+            this.analyticsServer = createServer(async (_, res) => {
+                res.writeHead(200, {
+                    'Content-Type': this.client.register.contentType,
+                });
+                res.write(await this.client.register.metrics());
+            });
+
+            this.analyticsServer.listen(ANALYTICS_PORT, () => {
+                Pogbot.getInstance().logger.info(
+                    `Analytics enabled. Server listening on port ${ANALYTICS_PORT}.`
+                );
             });
         }
     }
@@ -46,6 +72,18 @@ export class PogAnalytics {
         }
     }
 
+    setGuilds(amount) {
+        if (analyticsEnabled()) {
+            this.guildCounter.set(amount);
+        }
+    }
+
+    reportAPIPing(ping) {
+        if (analyticsEnabled()) {
+            this.apiLatencyHistory.observe(Math.round(ping));
+        }
+    }
+
     static setInstance(i) {
         PogAnalytics.instance = i;
     }
@@ -60,5 +98,5 @@ export class PogAnalytics {
  * @returns {boolean}
  */
 export function analyticsEnabled() {
-    return process.env.ANALYTICS_ENABLED;
+    return process.env.ANALYTICS_ENABLED ?? false;
 }

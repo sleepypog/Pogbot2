@@ -5,6 +5,7 @@ import {
     Guild,
     IntentsBitField,
     Message,
+    PermissionsBitField,
     SlashCommandBuilder,
 } from 'discord.js';
 import { readdirSync } from 'node:fs';
@@ -14,25 +15,6 @@ import { PogDB } from './database.js';
 import { PogAnalytics } from './utils/analytics.js';
 import { getLogger } from './utils/logger.js';
 import { Translation } from './utils/translation.js';
-
-// TODO: Move interfaces and type definitions to an TypeScript definition file.
-
-/***
- * Structure of an command module.
- * @typedef {Object} Command
- * @property {string} name Name of this command.
- * @property {boolean?} guildOnly Is this command limited to guilds only?
- * @property {SlashCommandBuilder} data discord.js slash command builder.
- * @property {(i: CommandInteraction) => Promise<void>} execute Function ran when executing this command.
- * @property {(i: import('discord.js').Interaction) => Promise<void>} followUp Function ran when following up with this command, for example, buttons.
- */
-
-/***
- * Structure of an in-memory active pog listener.
- * @typedef {Object} PogListener
- * @property {string} id
- * @property {number} timestamp
- */
 
 export class Pogbot extends Client {
     /** @type {Pogbot} */
@@ -44,13 +26,13 @@ export class Pogbot extends Client {
     /** @type {Translation} */
     localization;
 
-    /** @type {Collection<string, Command>} */
+    /** @type {Collection<string, import('./types.js').Command>} */
     #commands;
 
     /** @type {Collection<string, string>} */
     #waitingFollowUps;
 
-    /** @type {Collection<string, PogListener>} */
+    /** @type {Collection<string, import('./types.js').PogListener>} */
     #activePogs;
 
     /** @type {PogAnalytics} */
@@ -94,7 +76,7 @@ export class Pogbot extends Client {
                 return;
             }
 
-            /** @type {Command} */
+            /** @type {import('./types.js').Command} */
             const { name, guildOnly, data: builder } = command();
 
             // Configure values from the command object.
@@ -132,6 +114,7 @@ export class Pogbot extends Client {
         this.logger.info(
             `Logged in as ${this.user.username} [${this.user.id}]`
         );
+        this.analytics.setGuilds(this.guilds.cache.size);
     }
 
     /**
@@ -203,6 +186,8 @@ export class Pogbot extends Client {
                 this.#waitingFollowUps.delete(`${i.channelId}-${i.user.id}`);
             }
         }
+
+        this.analytics.reportAPIPing(this.ws.ping);
     }
 
     /** @param {Guild} g */
@@ -219,8 +204,50 @@ export class Pogbot extends Client {
     }
 
     /** @param {Message} m */
-    #message(m) {
-        // TODO: Create message event handler
+    async #message(m) {
+        if (!m.inGuild() || m.author.bot) return;
+
+        const listener = this.#activePogs.get(m.guildId);
+        if (listener !== undefined) {
+            if (m.author.id === listener.initiator) return;
+
+            if (m.content.toLowerCase().includes('pog')) {
+                (await PogDB.getInstance().getMember(m.member)).increment(
+                    'score'
+                );
+
+                m.reply(
+                    Translation.t(
+                        m.guild.preferredLocale,
+                        'congratulations',
+                        Translation.d(performance.now() - listener.timestamp),
+                        `<@${m.author.id}>`
+                    )
+                );
+            }
+        } else {
+            if (
+                m.member
+                    .permissionsIn(m.channel)
+                    .has(PermissionsBitField.Flags.ManageMessages)
+            ) {
+                /** @type {string[]} */
+                const triggers = (await PogDB.getInstance().getGuild(m.guildId))
+                    .triggers;
+                triggers.forEach((trigger) => {
+                    if (m.content.includes(trigger)) {
+                        this.#activePogs.set(m.guildId, {
+                            initiator: m.author.id,
+                            timestamp: performance.now(),
+                        });
+                        m.react('👀');
+                        return;
+                    }
+                });
+            }
+        }
+
+        this.analytics.reportAPIPing(this.ws.ping);
     }
 
     /**

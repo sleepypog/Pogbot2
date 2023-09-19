@@ -5,6 +5,8 @@ import { Guild as GuildModel } from './models/guild.js';
 import { Member as MemberModel } from './models/member.js';
 
 // TODO: Setup Sequelize transactions for database safety.
+// TODO: Caching.
+
 export class PogDB {
     /** @type {PogDB} */
     static #instance;

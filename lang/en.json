@@ -15,7 +15,7 @@
     "triggerRemove": "Remove trigger",
     "triggerAddTitle": "Add an trigger",
     "triggerRemoveTitle": "Remove an trigger",
-    "triggerAddPromptLabel": "Trigger as regular expression.",
+    "triggerAddPromptLabel": "Trigger to check.",
     "triggerAdded": "Added %s as an trigger.",
     "triggerInvalidCharacter": "Whoops! Could not add trigger because it contains an illegal character. (`;`)",
     "triggerRemoveEntry": "Remove this entry",
@@ -31,6 +31,8 @@
     "leaderboardTitle": "Leaderboard for %s",
 
     "scoreEdited": "Done! That user now has %d pogs.",
+
+    "congratulations": "Congratulations! It took only %s for %s to pog!",
 
     "commandError": "Whoops! Could not execute this command due to an error.\n`%s`"
 }

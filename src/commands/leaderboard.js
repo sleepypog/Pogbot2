@@ -23,6 +23,7 @@ export default function Leaderboard() {
                 const member = await PogDB.getInstance().getMember(i.member);
                 member.increment('score', { by: 100 });
             }
+
             const scores = [];
 
             const members = await PogDB.getInstance().getTopScores(i.guild);

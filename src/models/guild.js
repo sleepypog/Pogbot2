@@ -7,22 +7,9 @@ export function Guild() {
             primaryKey: true,
             unique: true,
         },
-        /*
-         * Channels is stored as an single string, as it allows the usage of database
-         * dialects that don't support arrays, for example, SQLite.
-         */
-        channels: {
-            type: DataTypes.STRING,
-            get() {
-                const rawValue = this.getDataValue('channels');
-                return rawValue ? rawValue.split(';') : [];
-            },
-            set(c) {
-                this.setDataValue('channels', c.join(';'));
-            },
-        },
         /**
-         * Same thing as above.
+         * Triggers are stored as an single string, as it allows the usage of database
+         * dialects that don't support arrays, for example, SQLite.
          */
         triggers: {
             type: DataTypes.STRING,
