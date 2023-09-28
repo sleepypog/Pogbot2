@@ -1,4 +1,4 @@
-import { createServer } from 'node:http';
+import express from 'express';
 import prom from 'prom-client';
 
 import { Pogbot } from '../client.js';
@@ -7,8 +7,6 @@ const ANALYTICS_PORT = 7171;
 
 export class PogAnalytics {
     static instance;
-
-    analyticsServer;
 
     client;
 
@@ -39,14 +37,13 @@ export class PogAnalytics {
                 help: 'Discord API Latency',
             });
 
-            this.analyticsServer = createServer(async (_, res) => {
-                res.writeHead(200, {
-                    'Content-Type': this.client.register.contentType,
-                });
-                res.write(await this.client.register.metrics());
+            const app = express();
+            app.get('/metrics', async (_, res) => {
+                res.type(this.client.register.contentType)
+                res.send(await this.client.register.metrics())
             });
 
-            this.analyticsServer.listen(ANALYTICS_PORT, () => {
+            app.listen(ANALYTICS_PORT, () => {
                 Pogbot.getInstance().logger.info(
                     `Analytics enabled. Server listening on port ${ANALYTICS_PORT}.`
                 );

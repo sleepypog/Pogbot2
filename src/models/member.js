@@ -15,7 +15,7 @@ export function Member() {
             allowNull: false,
         },
         score: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.SMALLINT,
             defaultValue: 0,
         },
     };
