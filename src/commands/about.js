@@ -50,7 +50,7 @@ export default function About() {
                         new ButtonBuilder()
                             .setLabel('GitHub')
                             .setStyle(ButtonStyle.Link)
-                            .setURL('https://github.com'),
+                            .setURL('https://github.com/sleepypog/Pogbot2'),
                     ]),
                 ],
             });
