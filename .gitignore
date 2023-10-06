@@ -1,3 +1,9 @@
+# Obvious ignored files
 node_modules
 .env
+
+# Not really needed for the open source release
 fly.toml
+
+# Prevent yarn/node logs making it into the repository
+*.log

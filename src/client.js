@@ -35,6 +35,9 @@ export class Pogbot extends Client {
     /** @type {Collection<string, import('./types.js').PogListener>} */
     #activePogs;
 
+    /** @type {Environment} */
+    #env;
+
     /** @type {PogAnalytics} */
     analytics;
 
@@ -264,6 +267,15 @@ export class Pogbot extends Client {
 
         this.#waitingFollowUps.set(`${channel}-${member}`, command);
         return true;
+    }
+
+    
+    setEnvironment(env) {
+        this.#env = env;
+    }
+
+    getEnvironment() {
+        return this.#env;
     }
 
     static getInstance() {

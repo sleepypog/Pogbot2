@@ -38,6 +38,10 @@ export default function About() {
                                 ),
                                 inline: true,
                             },
+                            {
+                                name: Translation.t(i.locale, 'environment'),
+                                value: (Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT' ? Translation.t(i.locale, 'environmentDevelopment') : Translation.t(i.locale, 'environmentProduction'))
+                            }
                         ]),
                 ],
                 components: [

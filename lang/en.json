@@ -25,6 +25,10 @@
     "score": "You have %d pogs in this guild.",
     "guilds": "Guilds",
     "uptime": "Uptime",
+    "environment": "Environment",
+    "environmentProduction": "Production 🌐",
+    "environmentDevelopment": "Development 🛠",
+
     "aboutTitle": "About Pogbot",
     "about": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
 
@@ -35,4 +39,5 @@
     "congratulations": "Congratulations! It took only %s for %s to pog!",
 
     "commandError": "Whoops! Could not execute this command due to an error.\n`%s`"
+
 }

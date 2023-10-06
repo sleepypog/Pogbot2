@@ -12,3 +12,8 @@ export interface PogListener {
     initiator: string,
     timestamp: number
 }
+
+export enum Environment {
+    DEVELOPMENT,
+    PRODUCTION
+}

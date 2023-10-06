@@ -6,6 +6,7 @@ import {
 
 import { PogDB } from '../database.js';
 import { Translation } from '../utils/translation.js';
+import { Pogbot } from '../client.js';
 
 export default function Leaderboard() {
     return {
@@ -17,9 +18,9 @@ export default function Leaderboard() {
         /** @param {CommandInteraction} i  */
         async execute(i) {
             const embed = new EmbedBuilder();
-            embed.setTitle(Translation.t(i.locale, 'leaderboardTitle'));
+            embed.setTitle(Translation.t(i.locale, 'leaderboardTitle', i.guild.name));
 
-            if (process.env.DEBUG) {
+            if (Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT') {
                 const member = await PogDB.getInstance().getMember(i.member);
                 member.increment('score', { by: 100 });
             }
