@@ -62,6 +62,9 @@ export class Pogbot extends Client {
     }
 
     #setupCommands() {
+        // Clear existing commands.
+        this.application.commands.set([]);
+
         this.#commands = new Collection();
 
         this.logger.debug('Reading commands directory.');
