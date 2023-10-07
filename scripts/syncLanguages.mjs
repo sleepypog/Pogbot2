@@ -1,4 +1,4 @@
-import { appendFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { readdirSync, writeFileSync } from 'node:fs';
 
 const SOURCE_LANGUAGE = 'en';
 
