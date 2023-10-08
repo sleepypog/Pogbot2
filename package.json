@@ -1,6 +1,6 @@
 {
     "name": "pogbot",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "./src/index.js",
     "license": "MIT",
     "type": "module",
@@ -8,7 +8,6 @@
     "scripts": {
         "lint": "prettier . -w",
         "lang:sync": "node ./scripts/syncLanguages.mjs",
-        "lang:translate": "",
         "prepare": "husky install"
     },
     "dependencies": {
