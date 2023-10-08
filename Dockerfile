@@ -15,9 +15,9 @@ ENV NODE_ENV="production"
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install -y build-essential pkg-config python
+# Not really needed rn
+# RUN apt-get update -qq && \
+#    apt-get install -y build-essential pkg-config python
 
 # Install node modules
 COPY --link package.json yarn.lock ./
