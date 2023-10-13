@@ -31,5 +31,6 @@
   "leaderboardTitle": "Tabla de posiciones de %s",
   "scoreEdited": "¡Listo! Ese usuario ahora tiene %d pogs.",
   "congratulations": "¡Felicidades! ¡Le tardo %s a %s responder!",
-  "commandError": "¡Ups! No se pudo ejecutar ese comando debido a un error.\n`%s`"
+  "commandError": "¡Ups! No se pudo ejecutar ese comando debido a un error.\n`%s`",
+  "noMembersError": "Parece que no hay miembros guardados en este servidor. Intentalo más tarde."
 }

@@ -4,9 +4,9 @@ import {
     SlashCommandBuilder,
 } from 'discord.js';
 
+import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
 import { Translation } from '../utils/translation.js';
-import { Pogbot } from '../client.js';
 
 export default function Leaderboard() {
     return {
@@ -18,7 +18,9 @@ export default function Leaderboard() {
         /** @param {CommandInteraction} i  */
         async execute(i) {
             const embed = new EmbedBuilder();
-            embed.setTitle(Translation.t(i.locale, 'leaderboardTitle', i.guild.name));
+            embed.setTitle(
+                Translation.t(i.locale, 'leaderboardTitle', i.guild.name)
+            );
 
             if (Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT') {
                 const member = await PogDB.getInstance().getMember(i.member);
@@ -36,7 +38,11 @@ export default function Leaderboard() {
                 );
             });
 
-            embed.setDescription(scores.join('\n'));
+            if (members.length === 0) {
+                embed.setDescription(Translation.t(i.locale, 'noMembersError'));
+            } else {
+                embed.setDescription(scores.join('\n'));
+            }
 
             await i.reply({ embeds: [embed] });
         },

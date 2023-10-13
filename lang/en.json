@@ -31,5 +31,6 @@
     "leaderboardTitle": "Leaderboard for %s",
     "scoreEdited": "Done! That user now has %d pogs.",
     "congratulations": "Congratulations! It took only %s for %s to pog!",
-    "commandError": "Whoops! Could not execute this command due to an error.\n`%s`"
+    "commandError": "Whoops! Could not execute this command due to an error.\n`%s`",
+    "noMembersError": "Seems like there is no stored members for this guild. Try again later."
 }
