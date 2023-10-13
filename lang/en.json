@@ -30,7 +30,9 @@
     "about": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
     "leaderboardTitle": "Leaderboard for %s",
     "scoreEdited": "Done! That user now has %d pogs.",
-    "congratulations": "Congratulations! It took only %s for %s to pog!",
+    "congratulations": "Congratulations! It only took %s for you to pog!",
     "commandError": "Whoops! Could not execute this command due to an error.\n`%s`",
-    "noMembersError": "Seems like there is no stored members for this guild. Try again later."
+    "noMembersError": "Seems like there is no stored members for this guild. Try again later.",
+    "tooLargeError": "That number is way too large! Try with an smaller one.",
+    "leaderboardAndMore": "*And %d more...*"
 }
