@@ -43,7 +43,11 @@ export class Pogbot extends Client {
 
     constructor(token) {
         super({
-            intents: [IntentsBitField.Flags.GuildMessages],
+            intents: [
+                IntentsBitField.Flags.Guilds,
+                IntentsBitField.Flags.GuildMessages,
+                IntentsBitField.Flags.MessageContent,
+            ],
         });
 
         Pogbot.setInstance(this);
@@ -55,6 +59,7 @@ export class Pogbot extends Client {
         new PogDB(this);
 
         this.#waitingFollowUps = new Collection();
+        this.#activePogs = new Collection();
 
         this.#setupListeners();
 
@@ -213,9 +218,9 @@ export class Pogbot extends Client {
     async #message(m) {
         if (!m.inGuild() || m.author.bot) return;
 
-        const listener = this.#activePogs.get(m.guildId);
+        const listener = this.#activePogs.get(m.channelId);
         if (listener !== undefined) {
-            if (m.author.id === listener.initiator) return;
+            //if (m.author.id === listener.initiator) return;
 
             if (m.content.toLowerCase().includes('pog')) {
                 (await PogDB.getInstance().getMember(m.member)).increment(
@@ -226,10 +231,11 @@ export class Pogbot extends Client {
                     Translation.t(
                         m.guild.preferredLocale,
                         'congratulations',
-                        Translation.d(performance.now() - listener.timestamp),
-                        `<@${m.author.id}>`
+                        Translation.d(performance.now() - listener.timestamp)
                     )
                 );
+
+                this.#activePogs.delete(m.channelId);
             }
         } else {
             if (
@@ -238,15 +244,15 @@ export class Pogbot extends Client {
                     .has(PermissionsBitField.Flags.ManageMessages)
             ) {
                 /** @type {string[]} */
-                const triggers = (await PogDB.getInstance().getGuild(m.guildId))
+                const triggers = (await PogDB.getInstance().getGuild(m.guild))
                     .triggers;
-                triggers.forEach((trigger) => {
+                triggers.forEach(async (trigger) => {
                     if (m.content.includes(trigger)) {
-                        this.#activePogs.set(m.guildId, {
+                        this.#activePogs.set(m.channelId, {
                             initiator: m.author.id,
                             timestamp: performance.now(),
                         });
-                        m.react('👀');
+                        await m.react('👀');
                         return;
                     }
                 });
@@ -272,7 +278,6 @@ export class Pogbot extends Client {
         return true;
     }
 
-    
     setEnvironment(env) {
         this.#env = env;
     }
