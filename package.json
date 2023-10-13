@@ -8,6 +8,7 @@
     "scripts": {
         "lint": "prettier . -w",
         "lang:sync": "node ./scripts/syncLanguages.mjs",
+        "versiondata:generate": "node ./scripts/generateVersionData.mjs",
         "prepare": "husky install"
     },
     "dependencies": {
