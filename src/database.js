@@ -98,7 +98,21 @@ export class PogDB {
      */
     async getTopScores(g) {
         return await this.member.findAll({
+            limit: 10,
             order: [['score', 'DESC']],
+            where: {
+                guildId: g.id,
+            },
+        });
+    }
+
+    /**
+     * Get the amount of scores for an guild.
+     * @param {Guild} g Guild id
+     * @returns {Promise<number>}
+     */
+    async getScoreCount(g) {
+        return await this.member.count({
             where: {
                 guildId: g.id,
             },

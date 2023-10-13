@@ -37,7 +37,11 @@ export default function Edit() {
 
             let m = await PogDB.getInstance().getMember(selectedMember);
 
-            m.increment('score', { by: amount });
+            m.increment('score', { by: amount }).catch(async () => {
+                await i.reply(Translation.t(i.locale, 'tooLargeError'));
+                return;
+            });
+
             m = await m.reload();
 
             await i.reply(
