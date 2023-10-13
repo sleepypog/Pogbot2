@@ -39,7 +39,7 @@ export class PogDB {
                 process.exit(-1);
             });
 
-        this.#sequelize.sync({ force: true }).then(() => {
+        this.#sequelize.sync().then(() => {
             this.#client.logger.debug('Database synced.');
         });
 
