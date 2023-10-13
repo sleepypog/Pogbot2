@@ -40,8 +40,18 @@ export default function About() {
                             },
                             {
                                 name: Translation.t(i.locale, 'environment'),
-                                value: (Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT' ? Translation.t(i.locale, 'environmentDevelopment') : Translation.t(i.locale, 'environmentProduction'))
-                            }
+                                value:
+                                    Pogbot.getInstance().getEnvironment() ===
+                                    'DEVELOPMENT'
+                                        ? Translation.t(
+                                              i.locale,
+                                              'environmentDevelopment'
+                                          )
+                                        : Translation.t(
+                                              i.locale,
+                                              'environmentProduction'
+                                          ),
+                            },
                         ]),
                 ],
                 components: [

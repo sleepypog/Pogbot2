@@ -39,8 +39,8 @@ export class PogAnalytics {
 
             const app = express();
             app.get('/metrics', async (_, res) => {
-                res.type(this.client.register.contentType)
-                res.send(await this.client.register.metrics())
+                res.type(this.client.register.contentType);
+                res.send(await this.client.register.metrics());
             });
 
             app.listen(ANALYTICS_PORT, () => {
