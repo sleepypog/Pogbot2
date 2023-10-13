@@ -27,12 +27,13 @@ export default function Leaderboard() {
                 member.increment('score', { by: 100 });
             }
 
-            const scores = [];
+            const lines = [];
 
             const members = await PogDB.getInstance().getTopScores(i.guild);
+
             members.forEach((m, i) => {
-                scores.push(
-                    `- ${getPlaceEmoji(i)} ${i + 1} <@${m.get(
+                lines.push(
+                    `- ${getPlaceEmoji(i)} **${i + 1}** <@${m.get(
                         'userId'
                     )}>: ${m.get('score')} pogs`
                 );
@@ -41,7 +42,17 @@ export default function Leaderboard() {
             if (members.length === 0) {
                 embed.setDescription(Translation.t(i.locale, 'noMembersError'));
             } else {
-                embed.setDescription(scores.join('\n'));
+                const count = await PogDB.getInstance().getScoreCount(i.guild);
+                if (members.length >= 10 && count > 10) {
+                    lines.push(
+                        Translation.t(
+                            i.locale,
+                            'leaderboardAndMore',
+                            count - 10
+                        )
+                    );
+                }
+                embed.setDescription(lines.join('\n'));
             }
 
             await i.reply({ embeds: [embed] });
