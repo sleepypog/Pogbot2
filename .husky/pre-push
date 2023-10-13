@@ -5,3 +5,5 @@ yarn versiondata:generate
 
 git add version.json
 git commit --amend --no-edit
+
+echo Generated version data!
