@@ -34,5 +34,6 @@
   "commandError": "¡Ups! No se pudo ejecutar ese comando debido a un error.\n`%s`",
   "noMembersError": "Parece que no hay miembros guardados en este servidor. Intentalo más tarde.",
   "tooLargeError": "¡Ese número es muy grande! Intenta con uno más pequeño.",
-  "leaderboardAndMore": "*Y %d más...*"
+  "leaderboardAndMore": "*Y %d más...*",
+  "version": "Version"
 }
