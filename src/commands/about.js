@@ -29,13 +29,20 @@ export default function About() {
                             {
                                 name: Translation.t(i.locale, 'guilds'),
                                 value: Pogbot.getInstance().guilds.cache.size.toString(),
-                                inline: true,
                             },
                             {
                                 name: Translation.t(i.locale, 'uptime'),
                                 value: Translation.d(
                                     Pogbot.getInstance()?.uptime
                                 ),
+                            },
+                            {
+                                name: Translation.t(i.locale, 'version'),
+                                value: (() => {
+                                    const { version, branch } =
+                                        Pogbot.getInstance().getBuildInfo();
+                                    return `${version} (⚙ ${branch})`;
+                                })(),
                                 inline: true,
                             },
                             {
@@ -51,12 +58,12 @@ export default function About() {
                                               i.locale,
                                               'environmentProduction'
                                           ),
+                                inline: true,
                             },
                         ]),
                 ],
                 components: [
                     new ActionRowBuilder().setComponents([
-                        // TODO: Set url to repo link
                         new ButtonBuilder()
                             .setLabel('GitHub')
                             .setStyle(ButtonStyle.Link)

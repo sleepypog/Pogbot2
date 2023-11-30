@@ -1,12 +1,10 @@
 import {
     Client,
     Collection,
-    CommandInteraction,
     Guild,
     IntentsBitField,
     Message,
     PermissionsBitField,
-    SlashCommandBuilder,
 } from 'discord.js';
 import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
@@ -35,11 +33,14 @@ export class Pogbot extends Client {
     /** @type {Collection<string, import('./types.js').PogListener>} */
     #activePogs;
 
-    /** @type {Environment} */
+    /** @type {import('./types.js').Environment} */
     #env;
 
     /** @type {PogAnalytics} */
     analytics;
+
+    /** @type {import('./types.js').BuildInfo} */
+    #buildInfo;
 
     constructor(token) {
         super({
@@ -51,6 +52,8 @@ export class Pogbot extends Client {
         });
 
         Pogbot.setInstance(this);
+
+        this.#importBuildInfo();
 
         this.logger = getLogger();
         this.localization = new Translation();
@@ -66,6 +69,21 @@ export class Pogbot extends Client {
         this.login(token);
     }
 
+    #importBuildInfo() {
+        import('../version.json', {
+            assert: {
+                type: 'json',
+            },
+        }).then(({ default: data }) => {
+            this.#buildInfo = data;
+            this.logger.info(
+                `Running ${this.getBuildInfo().version} from branch ${
+                    this.getBuildInfo().branch
+                }`
+            );
+        });
+    }
+
     #setupCommands() {
         // Clear existing commands.
         this.application.commands.set([]);
@@ -77,6 +95,7 @@ export class Pogbot extends Client {
         const commands = readdirSync('./src/commands').filter((cmd) =>
             cmd.endsWith('.js')
         );
+
         commands.forEach(async (cmd, i) => {
             const { default: command } = await import(`./commands/${cmd}`);
 
@@ -284,6 +303,10 @@ export class Pogbot extends Client {
 
     getEnvironment() {
         return this.#env;
+    }
+
+    getBuildInfo() {
+        return this.#buildInfo;
     }
 
     static getInstance() {

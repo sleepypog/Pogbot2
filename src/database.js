@@ -1,5 +1,5 @@
 import { Guild, GuildMember } from 'discord.js';
-import { Model, Sequelize } from 'sequelize';
+import { Model, Op, Sequelize } from 'sequelize';
 
 import { Guild as GuildModel } from './models/guild.js';
 import { Member as MemberModel } from './models/member.js';
@@ -102,6 +102,7 @@ export class PogDB {
             order: [['score', 'DESC']],
             where: {
                 guildId: g.id,
+                score: { [Op.gte]: 1 }, // Members with 0 pogs won't appear in the leaderboard
             },
         });
     }
