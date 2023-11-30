@@ -13,6 +13,13 @@ export interface PogListener {
     timestamp: number
 }
 
+export interface BuildInfo {
+    generated: string,
+    version: string,
+    branch: string,
+    commit: string
+}
+
 export enum Environment {
     DEVELOPMENT,
     PRODUCTION

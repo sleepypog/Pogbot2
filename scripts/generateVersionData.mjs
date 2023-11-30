@@ -3,6 +3,7 @@ import { writeFileSync } from 'node:fs';
 
 const data = {
     generated: new Date().toISOString(),
+    branch: null,
     version: null,
     commit: null,
 };
@@ -12,7 +13,13 @@ function getLatestCommit() {
     return commit.toString().trim();
 }
 
-(data.version = process.env.npm_package_version),
-    (data.commit = getLatestCommit());
+function getBranch() {
+    const branch = execSync('git branch --show-current')
+    return branch.toString().trim();
+}
+
+data.version = process.env.npm_package_version
+data.branch = getBranch()
+data.commit = getLatestCommit()
 
 writeFileSync('version.json', JSON.stringify(data, null, 2));
