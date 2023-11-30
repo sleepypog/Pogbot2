@@ -12,6 +12,7 @@ export default function Leaderboard() {
     return {
         name: 'leaderboard',
         guildOnly: true,
+        debugOnly: false,
         data: new SlashCommandBuilder().setDescription(
             'See top scores for this guild.'
         ),
@@ -43,12 +44,12 @@ export default function Leaderboard() {
                 embed.setDescription(Translation.t(i.locale, 'noMembersError'));
             } else {
                 const count = await PogDB.getInstance().getScoreCount(i.guild);
-                if (members.length >= 10 && count > 10) {
+                if (count > members.length) {
                     lines.push(
                         Translation.t(
                             i.locale,
                             'leaderboardAndMore',
-                            count - 10
+                            count - members.length
                         )
                     );
                 }
