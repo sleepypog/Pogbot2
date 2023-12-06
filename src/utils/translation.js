@@ -1,4 +1,7 @@
 import { Collection } from 'discord.js';
+import i18next from 'i18next';
+import ICU from 'i18next-icu';
+import resourcesToBackend from 'i18next-resources-to-backend';
 import { readdirSync } from 'node:fs';
 import prettyMilliseconds from 'pretty-ms';
 import { sprintf } from 'sprintf-js';
@@ -16,65 +19,37 @@ export class Translation {
     constructor() {
         Translation.setInstance(this);
 
-        this.#strings = new Collection();
-        this.#loadStrings();
-    }
-
-    /*
-     * This is practically an copypaste of the command loading code.
-     */
-    #loadStrings() {
-        const strings = readdirSync('./lang').filter((f) =>
-            f.endsWith('.json')
-        );
-        strings.forEach(async (l, i) => {
-            const { default: language } = await import(`../../lang/${l}`, {
-                assert: {
-                    type: 'json',
-                },
-            });
-
-            this.#strings.set(l.replace('.json', ''), language);
-
-            Pogbot.getInstance().logger.silly(
-                `Registered language "${l}". [entry ${i + 1} out of ${
-                    strings.length
-                }]`
-            );
-        });
-    }
-
-    /**
-     * @param {String} locale
-     * @param {String} key
-     * @param {...object} args
-     */
-    static t(loc, key, ...args) {
-        let locale = loc.split('-')[0];
-
-        const strings = Translation.getInstance().#strings.get(locale);
-
-        try {
-            if (strings[key] === undefined) {
+        i18next
+            .use(
+                resourcesToBackend((language, namespace) =>
+                    import(`../../lang/${language}/${namespace}.json`, {
+                        assert: {
+                            type: 'json',
+                        },
+                    })
+                )
+            )
+            .use(ICU)
+            .init({
+                ns: ['strings'],
+                defaultNs: 'strings',
+                supportedLngs: ['en'],
+                fallbackLng: 'en',
+            })
+            .then((_) => {
+                Pogbot.getInstance().logger.debug(
+                    'Testing ICU string support.'
+                );
                 Pogbot.getInstance().logger.silly(
-                    `String '${key}' not found in locale ${locale}, defaulting to ${DEFAULT_LOCALE}`
+                    i18next.t('score', { amount: 0 })
                 );
-
-                locale = DEFAULT_LOCALE;
-
-                return sprintf(
-                    Translation.getInstance().#strings.get(DEFAULT_LOCALE)[key],
-                    args
+                Pogbot.getInstance().logger.silly(
+                    i18next.t('score', { amount: 1 })
                 );
-            } else {
-                return sprintf(strings[key], args);
-            }
-        } catch (error) {
-            Pogbot.getInstance().logger.warn(
-                `Error while formatting string '${key}' in ${locale}: ${error.message}`
-            );
-            return key;
-        }
+                Pogbot.getInstance().logger.silly(
+                    i18next.t('score', { amount: 2 })
+                );
+            });
     }
 
     /**
