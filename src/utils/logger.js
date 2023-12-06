@@ -8,7 +8,7 @@ export function getLogger() {
         level:
             Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT'
                 ? 'silly'
-                : 'info',
+                : 'debug',
         format: winston.format.combine(
             winston.format.colorize(),
             winston.format.simple()

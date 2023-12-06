@@ -1,9 +1,11 @@
 import {
     CommandInteraction,
+    MessageFlags,
     ModalBuilder,
     PermissionFlagsBits,
     SlashCommandBuilder,
 } from 'discord.js';
+import i18next from 'i18next';
 
 import { PogDB } from '../database.js';
 import { Translation } from '../utils/translation.js';
@@ -38,15 +40,20 @@ export default function Edit() {
             let m = await PogDB.getInstance().getMember(selectedMember);
 
             m.increment('score', { by: amount }).catch(async () => {
-                await i.reply(Translation.t(i.locale, 'tooLargeError'));
+                await i.reply(i18next.t('tooLargeError', { lng: i.locale }));
                 return;
             });
 
             m = await m.reload();
 
-            await i.reply(
-                Translation.t(i.locale, 'scoreEdited', m.get('score'))
-            );
+            await i.reply({
+                content: i18next.t('scoreEdited', {
+                    user: `<@${i.user.id}>`,
+                    amount: m.score,
+                    lng: i.locale,
+                }),
+                flags: [MessageFlags.SuppressNotifications],
+            });
         },
     };
 }

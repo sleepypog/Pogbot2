@@ -20,7 +20,10 @@ export default function Leaderboard() {
         async execute(i) {
             const embed = new EmbedBuilder();
             embed.setTitle(
-                Translation.t(i.locale, 'leaderboardTitle', i.guild.name)
+                i18next.t('leaderboardTitle', {
+                    guild: i.guild.name,
+                    lng: i.locale,
+                })
             );
 
             if (Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT') {
@@ -41,16 +44,17 @@ export default function Leaderboard() {
             });
 
             if (members.length === 0) {
-                embed.setDescription(Translation.t(i.locale, 'noMembersError'));
+                embed.setDescription(
+                    i18next.t('noMembersError', { lng: i.locale })
+                );
             } else {
                 const count = await PogDB.getInstance().getScoreCount(i.guild);
                 if (count > members.length) {
                     lines.push(
-                        Translation.t(
-                            i.locale,
-                            'leaderboardAndMore',
-                            count - members.length
-                        )
+                        i18next.t('leaderboardAndMore', {
+                            amount: count - members.length,
+                            lng: i.locale,
+                        })
                     );
                 }
                 embed.setDescription(lines.join('\n'));

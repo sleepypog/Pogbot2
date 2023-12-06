@@ -30,7 +30,7 @@ export default function About() {
             switch (i.options.getSubcommand()) {
                 case 'me': {
                     const user = await PogDB.getInstance().getMember(i.member);
-                    await i.reply(prettyJson(user.toJSON()));
+                    await i.reply(JSON.stringify(user.toJSON(), null, 2));
                 }
             }
         },
