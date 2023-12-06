@@ -3,10 +3,10 @@ import {
     EmbedBuilder,
     SlashCommandBuilder,
 } from 'discord.js';
+import i18next from 'i18next';
 
 import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
-import { Translation } from '../utils/translation.js';
 
 export default function Leaderboard() {
     return {

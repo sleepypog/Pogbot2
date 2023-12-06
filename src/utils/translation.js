@@ -11,8 +11,6 @@ export class Translation {
     /** @type {Translation} */
     static instance;
 
-    #strings;
-
     constructor() {
         Translation.setInstance(this);
 
@@ -32,6 +30,7 @@ export class Translation {
                 defaultNs: 'strings',
                 supportedLngs: ['en'],
                 fallbackLng: 'en',
+                debug: true,
             })
             .then((_) => {
                 Pogbot.getInstance().logger.debug(
