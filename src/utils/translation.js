@@ -1,10 +1,7 @@
-import { Collection } from 'discord.js';
 import i18next from 'i18next';
 import ICU from 'i18next-icu';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import { readdirSync } from 'node:fs';
 import prettyMilliseconds from 'pretty-ms';
-import { sprintf } from 'sprintf-js';
 
 import { Pogbot } from '../client.js';
 
