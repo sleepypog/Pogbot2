@@ -13,11 +13,10 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
+import i18next from 'i18next';
 
 import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
-import { asChunks } from '../utils/array.js';
-import { Translation } from '../utils/translation.js';
 
 /** @type {import('../client.js').Command} */
 export default function Triggers() {
