@@ -1,7 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn lang:sync
 yarn build:info
 
 npx lint-staged

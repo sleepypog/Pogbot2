@@ -24,13 +24,24 @@ export default function About() {
                 new SlashCommandSubcommandBuilder()
                     .setName('me')
                     .setDescription('Your data.')
+            )
+            .addSubcommand(
+                new SlashCommandSubcommandBuilder()
+                    .setName('guild')
+                    .setDescription('Guild data.')
             ),
         /** @param {CommandInteraction} i  */
         async execute(i) {
             switch (i.options.getSubcommand()) {
                 case 'me': {
                     const user = await PogDB.getInstance().getMember(i.member);
-                    await i.reply(prettyJson(user.toJSON()));
+                    await i.reply(JSON.stringify(user.toJSON(), null, 2));
+                    break;
+                }
+                case 'guild': {
+                    const guild = await PogDB.getInstance().getGuild(i.guild);
+                    await i.reply(JSON.stringify(guild.toJSON(), null, 2));
+                    break;
                 }
             }
         },

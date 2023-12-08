@@ -6,6 +6,7 @@ import {
     EmbedBuilder,
     SlashCommandBuilder,
 } from 'discord.js';
+import i18next from 'i18next';
 
 import { Pogbot } from '../client.js';
 import { Translation } from '../utils/translation.js';
@@ -23,41 +24,41 @@ export default function About() {
             await i.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle(Translation.t(i.locale, 'aboutTitle'))
-                        .setDescription(Translation.t(i.locale, 'about'))
+                        .setTitle(i18next.t('aboutTitle', { lng: i.locale }))
+                        .setDescription(i18next.t('about', { lng: i.locale }))
                         .addFields([
                             {
-                                name: Translation.t(i.locale, 'guilds'),
+                                name: i18next.t('guilds', { lng: i.locale }),
                                 value: Pogbot.getInstance().guilds.cache.size.toString(),
                             },
                             {
-                                name: Translation.t(i.locale, 'uptime'),
+                                name: i18next.t('uptime', { lng: i.locale }),
                                 value: Translation.d(
                                     Pogbot.getInstance()?.uptime
                                 ),
                             },
                             {
-                                name: Translation.t(i.locale, 'version'),
+                                name: i18next.t('version', { lng: i.locale }),
                                 value: (() => {
                                     const { version, branch } =
                                         Pogbot.getInstance().getBuildInfo();
-                                    return `${version} (⚙ ${branch})`;
+                                    return `${version} (🌴 ${branch})`;
                                 })(),
                                 inline: true,
                             },
                             {
-                                name: Translation.t(i.locale, 'environment'),
+                                name: i18next.t('environment', {
+                                    lng: i.locale,
+                                }),
                                 value:
                                     Pogbot.getInstance().getEnvironment() ===
                                     'DEVELOPMENT'
-                                        ? Translation.t(
-                                              i.locale,
-                                              'environmentDevelopment'
-                                          )
-                                        : Translation.t(
-                                              i.locale,
-                                              'environmentProduction'
-                                          ),
+                                        ? i18next.t('environmentDevelopment', {
+                                              lng: i.locale,
+                                          })
+                                        : i18next.t('environmentProduction', {
+                                              lng: i.locale,
+                                          }),
                                 inline: true,
                             },
                         ]),

@@ -6,6 +6,7 @@ import {
     Message,
     PermissionsBitField,
 } from 'discord.js';
+import i18next from 'i18next';
 import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
 
@@ -162,19 +163,17 @@ export class Pogbot extends Client {
                     );
                     if (i.replied) {
                         await i.editReply(
-                            Translation.t(
-                                i.locale,
-                                'commandError',
-                                e.toString()
-                            )
+                            i18next.t('commandError', {
+                                lng: i.locale,
+                                error: e.toString(),
+                            })
                         );
                     } else {
                         await i.reply(
-                            Translation.t(
-                                i.locale,
-                                'commandError',
-                                e.toString()
-                            )
+                            i18next.t('commandError', {
+                                lng: i.locale,
+                                error: e.toString(),
+                            })
                         );
                     }
                 }
@@ -196,19 +195,17 @@ export class Pogbot extends Client {
                     );
                     if (i.replied) {
                         await i.editReply(
-                            Translation.t(
-                                i.locale,
-                                'commandError',
-                                e.toString()
-                            )
+                            i18next.t('commandError', {
+                                lng: i.locale,
+                                error: e.toString(),
+                            })
                         );
                     } else {
                         await i.reply(
-                            Translation.t(
-                                i.locale,
-                                'commandError',
-                                e.toString()
-                            )
+                            i18next.t('commandError', {
+                                lng: i.locale,
+                                error: e.toString(),
+                            })
                         );
                     }
                 }
@@ -247,11 +244,12 @@ export class Pogbot extends Client {
                 );
 
                 m.reply(
-                    Translation.t(
-                        m.guild.preferredLocale,
-                        'congratulations',
-                        Translation.d(performance.now() - listener.timestamp)
-                    )
+                    i18next.t('commandError', {
+                        lng: m.guild.preferredLocale,
+                        time: Translation.d(
+                            performance.now() - listener.timestamp
+                        ),
+                    })
                 );
 
                 this.#activePogs.delete(m.channelId);

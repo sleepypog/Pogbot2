@@ -14,12 +14,12 @@ function getLatestCommit() {
 }
 
 function getBranch() {
-    const branch = execSync('git branch --show-current')
+    const branch = execSync('git branch --show-current');
     return branch.toString().trim();
 }
 
-data.version = process.env.npm_package_version
-data.branch = getBranch()
-data.commit = getLatestCommit()
+data.version = process.env.npm_package_version;
+data.branch = getBranch();
+data.commit = getLatestCommit();
 
 writeFileSync('version.json', JSON.stringify(data, null, 2));

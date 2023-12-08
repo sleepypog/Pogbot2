@@ -13,11 +13,10 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
+import i18next from 'i18next';
 
 import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
-import { asChunks } from '../utils/array.js';
-import { Translation } from '../utils/translation.js';
 
 /** @type {import('../client.js').Command} */
 export default function Triggers() {
@@ -42,21 +41,23 @@ export default function Triggers() {
             const guild = await PogDB.getInstance().getGuild(i.guild);
             const triggers = guild.get('triggers');
 
+            // TODO: Maybe merge these two cases, as they share almost all their code.
             switch (i.options.getSubcommand()) {
                 case 'list': {
                     await i.reply({
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle(
-                                    Translation.t(i.locale, 'triggerListTitle')
+                                    i18next.t('triggerListTitle', {
+                                        lng: i.locale,
+                                    })
                                 )
                                 .setDescription(
                                     `${
                                         triggers.length === 0
-                                            ? Translation.t(
-                                                  i.locale,
-                                                  'triggerListEmpty'
-                                              )
+                                            ? i18next.t('triggerListEmpty', {
+                                                  lng: i.locale,
+                                              })
                                             : formatTriggers(triggers).join(
                                                   '\n'
                                               )
@@ -72,15 +73,16 @@ export default function Triggers() {
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle(
-                                    Translation.t(i.locale, 'triggerListTitle')
+                                    i18next.t('triggerListTitle', {
+                                        lng: i.locale,
+                                    })
                                 )
                                 .setDescription(
                                     `${
                                         triggers.length === 0
-                                            ? Translation.t(
-                                                  i.locale,
-                                                  'triggerListEmpty'
-                                              )
+                                            ? i18next.t('triggerListEmpty', {
+                                                  lng: i.locale,
+                                              })
                                             : formatTriggers(triggers).join(
                                                   '\n'
                                               )
@@ -92,14 +94,18 @@ export default function Triggers() {
                                 new ButtonBuilder()
                                     .setCustomId('triggerAdd')
                                     .setLabel(
-                                        Translation.t(i.locale, 'triggerAdd')
+                                        i18next.t('triggerAdd', {
+                                            lng: i.locale,
+                                        })
                                     )
                                     .setStyle(ButtonStyle.Success)
                                     .setEmoji('➕'),
                                 new ButtonBuilder()
                                     .setCustomId('triggerRemove')
                                     .setLabel(
-                                        Translation.t(i.locale, 'triggerRemove')
+                                        i18next.t('triggerRemove', {
+                                            lng: i.locale,
+                                        })
                                     )
                                     .setStyle(ButtonStyle.Danger)
                                     .setEmoji('➖')
@@ -128,17 +134,16 @@ export default function Triggers() {
                     case 'triggerAdd': {
                         const modal = new ModalBuilder()
                             .setTitle(
-                                Translation.t(i.locale, 'triggerAddTitle')
+                                i18next.t('triggerAddTitle', { lng: i.locale })
                             )
                             .setCustomId('triggerAddModal')
                             .setComponents([
                                 new ActionRowBuilder().setComponents([
                                     new TextInputBuilder()
                                         .setLabel(
-                                            Translation.t(
-                                                i.locale,
-                                                'triggerAddPromptLabel'
-                                            )
+                                            i18next.t('triggerAddPromptLabel', {
+                                                lng: i.locale,
+                                            })
                                         )
                                         .setCustomId('triggerInput')
                                         .setRequired(true)
@@ -159,10 +164,9 @@ export default function Triggers() {
                                 new StringSelectMenuOptionBuilder()
                                     .setLabel(t)
                                     .setDescription(
-                                        Translation.t(
-                                            i.locale,
-                                            'triggerRemoveEntry'
-                                        )
+                                        i18next.t('triggerRemoveEntry', {
+                                            lng: i.locale,
+                                        })
                                     )
                                     .setValue(`-${index}`)
                                     .setEmoji('💬'),
@@ -173,16 +177,14 @@ export default function Triggers() {
                             embeds: [
                                 new EmbedBuilder()
                                     .setTitle(
-                                        Translation.t(
-                                            i.locale,
-                                            'triggerRemoveTitle'
-                                        )
+                                        i18next.t('triggerRemoveTitle', {
+                                            lng: i.locale,
+                                        })
                                     )
                                     .setDescription(
-                                        Translation.t(
-                                            i.locale,
-                                            'triggerRemoveSelect'
-                                        )
+                                        i18next.t('triggerRemoveSelect', {
+                                            lng: i.locale,
+                                        })
                                     ),
                             ],
                             ephemeral: true,
@@ -207,7 +209,9 @@ export default function Triggers() {
                     // Separator character
                     if (trigger.includes(';')) {
                         await i.reply(
-                            Translation.t(i.locale, 'triggerInvalidCharacter')
+                            i18next.t('triggerInvalidCharacter', {
+                                lng: i.locale,
+                            })
                         );
                         return;
                     }
@@ -216,11 +220,10 @@ export default function Triggers() {
                     await guild.update({ triggers: triggers });
 
                     await i.reply(
-                        Translation.t(
-                            i.locale,
-                            'triggerAdded',
-                            `\`${trigger}\``
-                        )
+                        i18next.t('triggerAdded', {
+                            trigger: trigger,
+                            lng: i.locale,
+                        })
                     );
                 }
             } else if (i.isStringSelectMenu()) {
@@ -235,7 +238,10 @@ export default function Triggers() {
                     await guild.update({ triggers: triggers });
 
                     await i.reply({
-                        content: Translation.t(i.locale, 'triggerRemoved', t),
+                        content: i18next.t('triggerRemoved', {
+                            amount: t,
+                            lng: i.locale,
+                        }),
                         ephemeral: true,
                     });
                 }

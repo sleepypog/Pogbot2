@@ -1,7 +1,7 @@
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import i18next from 'i18next';
 
 import { PogDB } from '../database.js';
-import { Translation } from '../utils/translation.js';
 
 /** @type {import('../client').Command} */
 export default function Score() {
@@ -12,7 +12,9 @@ export default function Score() {
         /** @param {CommandInteraction} i  */
         async execute(i) {
             const member = await PogDB.getInstance().getMember(i.member);
-            await i.reply(Translation.t(i.locale, 'score', member.score));
+            await i.reply(
+                i18next.t('score', { amount: member.score, lng: i.locale })
+            );
         },
     };
 }
