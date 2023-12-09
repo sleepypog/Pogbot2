@@ -7,6 +7,3 @@ fly.toml
 
 # Prevent yarn/node logs making it into the repository
 *.log
-
-# Prevent build info file from making it into the repository
-version.json
