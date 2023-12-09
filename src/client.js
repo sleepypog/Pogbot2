@@ -244,7 +244,7 @@ export class Pogbot extends Client {
                 );
 
                 m.reply(
-                    i18next.t('commandError', {
+                    i18next.t('congratulations', {
                         lng: m.guild.preferredLocale,
                         time: Translation.d(
                             performance.now() - listener.timestamp
