@@ -5,6 +5,9 @@ on:
   pull_request:
   push:
     paths-ignore:
+      - 'lang/*'
+      - '.github/*'
+      - 'crowdin.yml'
       - 'version.json'
 
 jobs:
