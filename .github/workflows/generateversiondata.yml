@@ -1,0 +1,27 @@
+name: 'Generate version data'
+
+on:
+  pull_request:
+  push:
+    paths-ignore:
+      - 'version.json'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Git: Checkout'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: "Node: Setup"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+      - name: 'Node: Generate version data'
+        id: script
+        run: yarn build:info
+      - name: 'Git: Send them back'
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: '📦 auto: generate version.json'
