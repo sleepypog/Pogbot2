@@ -1,7 +1,7 @@
 # Pogbot
 
 > ⚠ Pogbot requires `yarn`.
-> While [https://gitmoji.dev/](Gitmoji) is used for fun, you're not obliged to use it when contributing.
+> While [Gitmoji](https://gitmoji.dev/) is used for fun, you're not obliged to use it when contributing.
 
 ## Commands
 -   `yarn lang:sync`
