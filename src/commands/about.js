@@ -69,6 +69,10 @@ export default function About() {
                             .setLabel('GitHub')
                             .setStyle(ButtonStyle.Link)
                             .setURL('https://github.com/sleepypog/Pogbot2'),
+                        new ButtonBuilder()
+                            .setLabel('Crowdin')
+                            .setStyle(ButtonStyle.Link)
+                            .setURL('https://crowdin.com/project/pogbot'),
                     ]),
                 ],
             });
