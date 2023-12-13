@@ -11,7 +11,6 @@ import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
 
 import { PogDB } from './database.js';
-import { PogAnalytics } from './utils/analytics.js';
 import { getLogger } from './utils/logger.js';
 import { Translation } from './utils/translation.js';
 
@@ -37,9 +36,6 @@ export class Pogbot extends Client {
     /** @type {import('./types.js').Environment} */
     #env;
 
-    /** @type {PogAnalytics} */
-    analytics;
-
     /** @type {import('./types.js').BuildInfo} */
     #buildInfo;
 
@@ -58,7 +54,6 @@ export class Pogbot extends Client {
 
         this.logger = getLogger();
         this.localization = new Translation();
-        this.analytics = new PogAnalytics();
 
         new PogDB(this);
 
@@ -145,7 +140,6 @@ export class Pogbot extends Client {
         this.logger.info(
             `Logged in as ${this.user.username} [${this.user.id}]`
         );
-        this.analytics.setGuilds(this.guilds.cache.size);
     }
 
     /**
@@ -213,20 +207,16 @@ export class Pogbot extends Client {
                 this.#waitingFollowUps.delete(`${i.channelId}-${i.user.id}`);
             }
         }
-
-        this.analytics.reportAPIPing(this.ws.ping);
     }
 
     /** @param {Guild} g */
     #guildJoin(g) {
         PogDB.getInstance().getGuild(g); // create the guild in the db
-        this.analytics.addGuild();
         this.logger.debug(`Joined guild ${g.id}.`);
     }
 
     /** @param {Guild} g */
     #guildRemove(g) {
-        this.analytics.removeGuild();
         this.logger.debug(`Kicked from guild ${g.id}`);
     }
 
@@ -275,8 +265,6 @@ export class Pogbot extends Client {
                 });
             }
         }
-
-        this.analytics.reportAPIPing(this.ws.ping);
     }
 
     /**
