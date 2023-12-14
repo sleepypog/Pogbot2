@@ -171,6 +171,8 @@ export class Pogbot extends Client {
                     }
                 }
             } else {
+                // Note, this shouldn't happen anymore, since we're "creating" commands at runtime instead of
+                // pre-registering them.
                 this.logger.error(
                     `Received an interaction for command ${i.commandName}, but it isn't registered, did you forget to delete it?`
                 );
