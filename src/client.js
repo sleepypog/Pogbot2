@@ -130,7 +130,6 @@ export class Pogbot extends Client {
         this.on('interactionCreate', this.#interaction);
         this.on('messageCreate', this.#message);
         this.on('guildCreate', this.#guildJoin);
-        this.on('guildDelete', this.#guildRemove);
 
         this.logger.debug('Registered listeners.');
     }
@@ -213,11 +212,6 @@ export class Pogbot extends Client {
     #guildJoin(g) {
         PogDB.getInstance().getGuild(g); // create the guild in the db
         this.logger.debug(`Joined guild ${g.id}.`);
-    }
-
-    /** @param {Guild} g */
-    #guildRemove(g) {
-        this.logger.debug(`Kicked from guild ${g.id}`);
     }
 
     /** @param {Message} m */
