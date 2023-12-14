@@ -30,7 +30,6 @@ export class Translation {
                 defaultNs: 'strings',
                 supportedLngs: ['en'],
                 fallbackLng: 'en',
-                debug: true,
             })
             .then((_) => {
                 Pogbot.getInstance().logger.debug(
