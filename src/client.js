@@ -236,9 +236,7 @@ export class Pogbot extends Client {
                 m.reply(
                     i18next.t('congratulations', {
                         lng: m.guild.preferredLocale,
-                        time: Translation.d(
-                            performance.now() - listener.timestamp
-                        ),
+                        time: Translation.d(Date.now() - listener.timestamp),
                     })
                 );
 
