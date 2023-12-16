@@ -2,6 +2,7 @@ import { CommandInteraction, Interaction, SlashCommandBuilder } from "discord.js
 
 export interface Command {
     name: string,
+    debugOnly: boolean?,
     guildOnly: boolean?,
     data: SlashCommandBuilder,
     execute: (i: CommandInteraction) => Promise<void>,

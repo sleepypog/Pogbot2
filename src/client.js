@@ -11,6 +11,7 @@ import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
 
 import { PogDB } from './database.js';
+import { generateErrorEmbed } from './utils/debug.js';
 import { getLogger } from './utils/logger.js';
 import { Translation } from './utils/translation.js';
 
@@ -77,6 +78,7 @@ export class Pogbot extends Client {
                     this.getBuildInfo().branch
                 }`
             );
+            this.logger.info(`Current environment: ${this.getEnvironment()}`);
         });
     }
 
@@ -103,8 +105,14 @@ export class Pogbot extends Client {
             }
 
             /** @type {import('./types.js').Command} */
-            const { name, guildOnly, data: builder } = command();
+            const { name, debugOnly, guildOnly, data: builder } = command();
 
+            if (debugOnly && this.getEnvironment() !== 'DEVELOPMENT') {
+                this.logger.silly(
+                    `Skipping over ${name} as debugOnly is true and this is not an DEVELOPMENT environment.`
+                );
+                return;
+            }
             // Configure values from the command object.
             builder.setName(name).setDMPermission(!guildOnly);
 
@@ -142,7 +150,7 @@ export class Pogbot extends Client {
     }
 
     /**
-     * @param {import("discord.js").ChannelSelectMenuInteraction} i
+     * @param {import("discord.js").Interaction} i
      */
     async #interaction(i) {
         if (i.isCommand()) {
@@ -151,23 +159,16 @@ export class Pogbot extends Client {
                     const command = this.#commands.get(i.commandName);
                     await command.execute(i);
                 } catch (e) {
+                    const embed = generateErrorEmbed(i.locale, e);
+
                     this.logger.error(
                         `Something went wrong executing command ${i.commandName}\n${e.stack}`
                     );
+
                     if (i.replied) {
-                        await i.editReply(
-                            i18next.t('commandError', {
-                                lng: i.locale,
-                                error: e.toString(),
-                            })
-                        );
+                        await i.editReply({ embeds: [embed] });
                     } else {
-                        await i.reply(
-                            i18next.t('commandError', {
-                                lng: i.locale,
-                                error: e.toString(),
-                            })
-                        );
+                        await i.reply({ embeds: [embed], ephemeral: true });
                     }
                 }
             } else {
