@@ -1,11 +1,12 @@
 import i18next from 'i18next';
+import I18NexFsBackend from 'i18next-fs-backend';
 import ICU from 'i18next-icu';
-import resourcesToBackend from 'i18next-resources-to-backend';
 import prettyMilliseconds from 'pretty-ms';
 
 import { Pogbot } from '../client.js';
 
 export const DEFAULT_LOCALE = 'en';
+export const VALID_LOCALE_CODES = ['en', 'es'];
 
 export class Translation {
     /** @type {Translation} */
@@ -15,21 +16,22 @@ export class Translation {
         Translation.setInstance(this);
 
         i18next
-            .use(
-                resourcesToBackend((language, namespace) =>
-                    import(`../../lang/${language}/${namespace}.json`, {
-                        assert: {
-                            type: 'json',
-                        },
-                    })
-                )
-            )
+            .use(I18NexFsBackend)
             .use(ICU)
             .init({
                 ns: ['strings'],
                 defaultNs: 'strings',
-                supportedLngs: ['en'],
-                fallbackLng: 'en',
+
+                supportedLngs: VALID_LOCALE_CODES,
+                preload: VALID_LOCALE_CODES,
+                nonExplicitSupportedLngs: true,
+                fallbackLng: DEFAULT_LOCALE,
+
+                backend: {
+                    loadPath: './lang/{{lng}}/{{ns}}.json',
+                },
+
+                debug: true,
             })
             .then((_) => {
                 Pogbot.getInstance().logger.debug(
