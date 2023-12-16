@@ -8,6 +8,13 @@ export function Guild() {
             unique: true,
         },
         /**
+         * Is this guild allowed to use development/debug tools?
+         */
+        devGuild: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        /**
          * Triggers are stored as an single string, as it allows the usage of database
          * dialects that don't support arrays, for example, SQLite.
          */
