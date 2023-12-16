@@ -1,7 +1,7 @@
 quality of life:
-- head-branch: ['^qol', 'qol']
+    - head-branch: ['^qol', 'qol']
 feature:
-- head-branch: ['^feat', 'feat']
+    - head-branch: ['^feat', 'feat']
 language:
-- changed-files:
-  - any-glob-to-any-file: lang/**
+    - changed-files:
+          - any-glob-to-any-file: lang/**
