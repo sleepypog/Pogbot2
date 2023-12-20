@@ -62,14 +62,14 @@ export class PogDB {
 
     /**
      * Get an PogDB guild from an discord.js guild.
-     * @param {Guild} g
+     * @param {Guild} guild Guild object
      * @returns {Promise<Model<GuildModel>>}
      */
-    async getGuild(g) {
+    async getGuild(guild) {
         return (
             await this.guild.findOrCreate({
                 where: {
-                    id: g.id,
+                    id: guild.id,
                 },
             })
         )[0];
@@ -77,7 +77,7 @@ export class PogDB {
 
     /**
      * Get an PogDB member from an discord.js guild member.
-     * @param {GuildMember} member
+     * @param {GuildMember} member Member object
      * @returns {Promise<Model<MemberModel>>}
      */
     async getMember(member) {
@@ -93,15 +93,15 @@ export class PogDB {
 
     /**
      * Get an array with scores for an guild, sorted from highest to lowest.
-     * @param {Guild} g Guild id
+     * @param {Guild} guild Guild object
      * @returns {Promise<Model<MemberModel>[]>}
      */
-    async getTopScores(g) {
+    async getTopScores(guild) {
         return await this.member.findAll({
             limit: 10,
             order: [['score', 'DESC']],
             where: {
-                guildId: g.id,
+                guildId: guild.id,
                 score: { [Op.gte]: 1 }, // Members with 0 pogs won't appear in the leaderboard
             },
         });
@@ -109,13 +109,13 @@ export class PogDB {
 
     /**
      * Get the amount of scores for an guild.
-     * @param {Guild} g Guild id
+     * @param {Guild} guild Guild object
      * @returns {Promise<number>}
      */
-    async getScoreCount(g) {
+    async getScoreCount(guild) {
         return await this.member.count({
             where: {
-                guildId: g.id,
+                guildId: guild.id,
             },
         });
     }
