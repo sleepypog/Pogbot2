@@ -1,0 +1,45 @@
+{
+    "about": {
+        "description": "See information about Pogbot."
+    },
+    "debug": {
+        "description": "Internal debugging tools for Pogbot.",
+        "dump": {
+            "description": "Dump player and guild information.",
+            "subcommands": {
+                "me": "Dump your own data.",
+                "guild": "Dump guild data."
+            }
+        },
+        "subcommands": {
+            "forceerror": "Force an error to test error handling."
+        }
+    },
+    "edit": {
+        "description": "Edit member scores.",
+        "options": {
+            "member": "Member to edit scores for.",
+            "amount": "Number of pogs to add or remove from the member."
+        }
+    },
+    "leaderboard": {
+        "description": "See top scores for this guild."
+    },
+    "score": {
+        "description": "See your score in this guild."
+    },
+    "settings": {
+        "description": "View and modify guild settings.",
+        "emojis": {
+            "description": "Modify emoji reactions for this guild.",
+            "subcommands": {
+                "listening": "Modify the listening emoji.",
+                "pog": "Modify the pog emoji."
+            }
+        },
+        "subcommands": {
+            "overview": "View guild settings.",
+            "triggers": "View and modify triggers for this guild."
+        }
+    }
+}
