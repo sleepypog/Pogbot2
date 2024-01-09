@@ -13,18 +13,18 @@ export default function Leaderboard() {
         name: 'leaderboard',
         guildOnly: true,
         debugOnly: false,
-        data: new SlashCommandBuilder().setDescription(
-            'See top scores for this guild.'
-        ),
+        data: new SlashCommandBuilder(),
         /** @param {CommandInteraction} i  */
         async execute(i) {
-            const embed = new EmbedBuilder();
-            embed.setTitle(
-                i18next.t('leaderboardTitle', {
-                    guild: i.guild.name,
-                    lng: i.locale,
-                })
-            );
+            const embed = new EmbedBuilder()
+                .setTitle(
+                    i18next.t('leaderboard.title', {
+                        lng: i.locale,
+                    })
+                )
+                .setAuthor({
+                    name: i.guild.name,
+                });
 
             if (Pogbot.getInstance().getEnvironment() === 'DEVELOPMENT') {
                 const member = await PogDB.getInstance().getMember(i.member);
@@ -37,7 +37,7 @@ export default function Leaderboard() {
 
             members.forEach((m, i) => {
                 lines.push(
-                    `- ${getPlaceEmoji(i)} **${i + 1}** <@${m.get(
+                    `${getPlacePrefix(i)} **${i + 1}** <@${m.get(
                         'userId'
                     )}>: ${m.get('score')} pogs`
                 );
@@ -45,13 +45,13 @@ export default function Leaderboard() {
 
             if (members.length === 0) {
                 embed.setDescription(
-                    i18next.t('noMembersError', { lng: i.locale })
+                    i18next.t('error.noMembers', { lng: i.locale })
                 );
             } else {
                 const count = await PogDB.getInstance().getScoreCount(i.guild);
                 if (count > members.length) {
                     lines.push(
-                        i18next.t('leaderboardAndMore', {
+                        i18next.t('leaderboard.andMore', {
                             amount: count - members.length,
                             lng: i.locale,
                         })
@@ -65,19 +65,19 @@ export default function Leaderboard() {
     };
 }
 
-function getPlaceEmoji(index) {
+function getPlacePrefix(index) {
     switch (index) {
         case 0: {
-            return '🥇';
+            return '### - 🥇';
         }
         case 1: {
-            return '🥈';
+            return '### -🥈';
         }
         case 2: {
-            return '🥉';
+            return '### - 🥉';
         }
         default: {
-            return '';
+            return '- ';
         }
     }
 }

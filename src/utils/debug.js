@@ -19,7 +19,7 @@ export function formatJSON(object) {
 export function cleanStacktrace(stack) {
     let stacktrace = stack.split('\n');
     delete stacktrace[0]; // Remove Error#toString
-    stacktrace.splice(3); // Remove any element after the first two elements
+    stacktrace.splice(5); // Remove any element after the first four elements
     stacktrace = stacktrace.map((e) => e.trim()); // Trim all elements.
     console.log(stacktrace);
     return stacktrace.join('\n');
@@ -33,9 +33,9 @@ export function cleanStacktrace(stack) {
  */
 export function generateErrorEmbed(locale, error) {
     return new EmbedBuilder()
-        .setTitle(i18next.t('errorTitle', { lng: locale }))
+        .setTitle(i18next.t('error.title', { lng: locale }))
         .setDescription(
-            i18next.t('commandError', {
+            i18next.t('error.execution', {
                 lng: locale,
                 name: error.name,
                 description: error.message,
