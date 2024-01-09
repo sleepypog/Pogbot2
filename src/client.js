@@ -1,4 +1,5 @@
 import {
+    ApplicationCommandOptionType,
     Client,
     Collection,
     Guild,
@@ -11,9 +12,13 @@ import { readdirSync } from 'node:fs';
 import { Logger } from 'winston';
 
 import { PogDB } from './database.js';
-import { generateErrorEmbed } from './utils/debug.js';
-import { getLogger } from './utils/logger.js';
-import { Translation } from './utils/translation.js';
+import { Translation } from './translation.js';
+import {
+    getLogger,
+    generateErrorEmbed,
+    getDescriptionLocalizations,
+    getDescription,
+} from './utils/index.js';
 
 export class Pogbot extends Client {
     /** @type {Pogbot} */
@@ -27,9 +32,6 @@ export class Pogbot extends Client {
 
     /** @type {Collection<string, import('./types.js').Command>} */
     #commands;
-
-    /** @type {Collection<string, string>} */
-    #waitingFollowUps;
 
     /** @type {Collection<string, import('./types.js').PogListener>} */
     #activePogs;
@@ -45,6 +47,7 @@ export class Pogbot extends Client {
             intents: [
                 IntentsBitField.Flags.Guilds,
                 IntentsBitField.Flags.GuildMessages,
+                IntentsBitField.Flags.GuildMessageReactions,
                 IntentsBitField.Flags.MessageContent,
             ],
         });
@@ -58,7 +61,6 @@ export class Pogbot extends Client {
 
         new PogDB(this);
 
-        this.#waitingFollowUps = new Collection();
         this.#activePogs = new Collection();
 
         this.#setupListeners();
@@ -78,7 +80,7 @@ export class Pogbot extends Client {
                     this.getBuildInfo().branch
                 }`
             );
-            this.logger.info(`Current environment: ${this.getEnvironment()}`);
+            this.logger.debug(`Current environment: ${this.getEnvironment()}`);
         });
     }
 
@@ -113,8 +115,14 @@ export class Pogbot extends Client {
                 );
                 return;
             }
+
             // Configure values from the command object.
             builder.setName(name).setDMPermission(!guildOnly);
+
+            builder.setDescription(getDescription(`${name}.description`));
+            builder.setDescriptionLocalizations(
+                getDescriptionLocalizations(`${name}.description`)
+            );
 
             try {
                 this.application.commands.create(builder.toJSON());
@@ -178,36 +186,6 @@ export class Pogbot extends Client {
                     `Received an interaction for command ${i.commandName}, but it isn't registered, did you forget to delete it?`
                 );
             }
-        } else {
-            const followUp = this.#waitingFollowUps.get(
-                `${i.channelId}-${i.user.id}`
-            );
-            if (followUp !== undefined) {
-                try {
-                    this.#commands.get(followUp).followUp(i);
-                } catch (e) {
-                    this.logger.error(
-                        `Something went wrong executing command follow up ${i.commandName}\n${e.stack}`
-                    );
-                    if (i.replied) {
-                        await i.editReply(
-                            i18next.t('commandError', {
-                                lng: i.locale,
-                                error: e.toString(),
-                            })
-                        );
-                    } else {
-                        await i.reply(
-                            i18next.t('commandError', {
-                                lng: i.locale,
-                                error: e.toString(),
-                            })
-                        );
-                    }
-                }
-
-                this.#waitingFollowUps.delete(`${i.channelId}-${i.user.id}`);
-            }
         }
     }
 
@@ -221,7 +199,10 @@ export class Pogbot extends Client {
     async #message(m) {
         if (!m.inGuild() || m.author.bot) return;
 
+        const guild = await PogDB.getInstance().getGuild(m.guild);
+
         const listener = this.#activePogs.get(m.channelId);
+
         if (listener !== undefined) {
             //if (m.author.id === listener.initiator) return;
 
@@ -229,6 +210,8 @@ export class Pogbot extends Client {
                 (await PogDB.getInstance().getMember(m.member)).increment(
                     'score'
                 );
+
+                m.react(await guild.get('pogEmoji'));
 
                 m.reply(
                     i18next.t('congratulations', {
@@ -248,36 +231,20 @@ export class Pogbot extends Client {
                     .has(PermissionsBitField.Flags.ManageMessages)
             ) {
                 /** @type {string[]} */
-                const triggers = (await PogDB.getInstance().getGuild(m.guild))
-                    .triggers;
+                const triggers = guild.get('triggers');
+
                 triggers.forEach(async (trigger) => {
                     if (m.content.includes(trigger)) {
                         this.#activePogs.set(m.channelId, {
                             initiator: m.author.id,
                             timestamp: performance.now(),
                         });
-                        await m.react('👀');
+                        await m.react(guild.get('listeningEmoji'));
                         return;
                     }
                 });
             }
         }
-    }
-
-    /**
-     * Add an follow up, this is used to identify whenever interactions belong to an same execution.
-     * @param {string} channel
-     * @param {string} member
-     * @param {string} command
-     * @returns {boolean} Depending on whenever the follow up could be added or not.
-     */
-    addFollowUp(channel, member, command) {
-        if (this.#waitingFollowUps.has(`${channel}-${member}`)) {
-            return false;
-        }
-
-        this.#waitingFollowUps.set(`${channel}-${member}`, command);
-        return true;
     }
 
     setEnvironment(env) {

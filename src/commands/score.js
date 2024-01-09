@@ -8,7 +8,7 @@ export default function Score() {
     return {
         name: 'score',
         guildOnly: true,
-        data: new SlashCommandBuilder().setDescription('See your score.'),
+        data: new SlashCommandBuilder(),
         /** @param {CommandInteraction} i  */
         async execute(i) {
             const member = await PogDB.getInstance().getMember(i.member);

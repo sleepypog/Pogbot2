@@ -8,11 +8,14 @@ import {
     SlashCommandSubcommandBuilder,
     SlashCommandSubcommandGroupBuilder,
 } from 'discord.js';
+import i18next from 'i18next';
 
-import { Pogbot } from '../client.js';
 import { PogDB } from '../database.js';
-import { formatJSON } from '../utils/debug.js';
-import { Translation } from '../utils/translation.js';
+import {
+    formatJSON,
+    getDescription,
+    getDescriptionLocalizations,
+} from '../utils/index.js';
 
 /** @type {import('../client.js').Command} */
 export default function About() {
@@ -21,27 +24,48 @@ export default function About() {
         guildOnly: true,
         debugOnly: true,
         data: new SlashCommandBuilder()
-            .setDescription('Internal debug tools for Pogbot.')
             .addSubcommandGroup(
                 new SlashCommandSubcommandGroupBuilder()
                     .setName('dump')
-                    .setDescription('Dump data.')
+                    .setDescription(getDescription('debug.dump.description'))
+                    .setDescriptionLocalizations(
+                        getDescriptionLocalizations('debug.dump.description')
+                    )
                     .addSubcommand(
                         new SlashCommandSubcommandBuilder()
                             .setName('me')
-                            .setDescription('Your data.')
+                            .setDescription(
+                                getDescription('debug.dump.subcommands.me')
+                            )
+                            .setDescriptionLocalizations(
+                                getDescriptionLocalizations(
+                                    'debug.dump.subcommands.me'
+                                )
+                            )
                     )
                     .addSubcommand(
                         new SlashCommandSubcommandBuilder()
                             .setName('guild')
-                            .setDescription('Guild data.')
+                            .setDescription(
+                                getDescription('debug.dump.subcommands.guild')
+                            )
+                            .setDescriptionLocalizations(
+                                getDescriptionLocalizations(
+                                    'debug.dump.subcommands.guild'
+                                )
+                            )
                     )
             )
             .addSubcommand(
                 new SlashCommandSubcommandBuilder()
                     .setName('forceerror')
                     .setDescription(
-                        'Force an error to test error handling logic.'
+                        getDescription('debug.subcommands.forceerror')
+                    )
+                    .setDescriptionLocalizations(
+                        getDescriptionLocalizations(
+                            'debug.subcommands.forceerror'
+                        )
                     )
             ),
         /** @param {CommandInteraction} i  */

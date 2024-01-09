@@ -8,7 +8,11 @@ import {
 import i18next from 'i18next';
 
 import { PogDB } from '../database.js';
-import { Translation } from '../utils/translation.js';
+import { Translation } from '../translation.js';
+import {
+    getDescription,
+    getDescriptionLocalizations,
+} from '../utils/description.js';
 
 /** @type {import('../client.js').Command} */
 export default function Edit() {
@@ -16,18 +20,21 @@ export default function Edit() {
         name: 'edit',
         guildOnly: true,
         data: new SlashCommandBuilder()
-            .setDescription('Edit an member score manually.')
             .addUserOption((o) =>
                 o
                     .setName('member')
-                    .setDescription('Member to edit scores for')
+                    .setDescription(getDescription('edit.options.member'))
+                    .setDescriptionLocalizations(
+                        getDescriptionLocalizations('edit.options.member')
+                    )
                     .setRequired(true)
             )
             .addIntegerOption((o) =>
                 o
                     .setName('amount')
-                    .setDescription(
-                        'Number of pogs to add or remove from the user.'
+                    .setDescription(getDescription('edit.options.amount'))
+                    .setDescriptionLocalizations(
+                        getDescriptionLocalizations('edit.options.amount')
                     )
                     .setRequired(true)
             )
@@ -40,7 +47,9 @@ export default function Edit() {
             let m = await PogDB.getInstance().getMember(selectedMember);
 
             m.increment('score', { by: amount }).catch(async () => {
-                await i.reply(i18next.t('tooLargeError', { lng: i.locale }));
+                await i.reply(
+                    i18next.t('error.numberTooLarge', { lng: i.locale })
+                );
                 return;
             });
 

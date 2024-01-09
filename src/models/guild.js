@@ -28,5 +28,13 @@ export function Guild() {
                 this.setDataValue('triggers', t.join(';'));
             },
         },
+        listeningEmoji: {
+            type: DataTypes.STRING,
+            defaultValue: '👀',
+        },
+        pogEmoji: {
+            type: DataTypes.STRING,
+            defaultValue: '🐐',
+        },
     };
 }

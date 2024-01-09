@@ -1,32 +1,62 @@
 {
-    "triggerListTitle": "Triggers",
-    "triggerListEmpty": "This guild has not configured any trigger.",
     "triggerAdd": "Add trigger",
     "triggerRemove": "Remove trigger",
     "triggerAddTitle": "Add an trigger",
     "triggerRemoveTitle": "Remove an trigger",
     "triggerAddPromptLabel": "Trigger to check.",
     "triggerAdded": "Added `{trigger}` as an trigger.",
-    "triggerInvalidCharacter": "Whoops! Could not add trigger because it contains an illegal character. (`;`)",
     "triggerRemoveEntry": "Remove this entry",
     "triggerRemoveSelect": "Select an trigger to remove",
     "triggerRemoved": "Removed trigger `{trigger}`.",
     "score": "You have {amount, plural, one {# pog} other {# pogs}} in this guild.",
-    "guilds": "Guilds",
-    "uptime": "Uptime",
-    "environment": "Environment",
-    "environmentProduction": "Production :globe_with_meridians:",
-    "environmentDevelopment": "Development :hammer_pick:",
-    "aboutTitle": "About Pogbot",
-    "about": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
-    "leaderboardTitle": "Leaderboard for {guild}",
-    "errorTitle": "🐛 This is awkward.",
+    "about": {
+        "title": "About Pogbot",
+        "aboutPogbot": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
+        "guilds": "Guilds",
+        "uptime": "Uptime",
+        "version": "Version",
+        "environment": {
+            "title": "Environment",
+            "production": "Production :globe_with_meridians:",
+            "development": "Development :hammer_pick:"
+        }
+    },
     "scoreEdited": "Done! {user} now has {amount, plural, one {# pog} other {# pogs}}.",
     "congratulations": "Congratulations! It only took {time} for you to pog!",
-    "commandError": "Could not execute this command due to an error.\n### {name} \n{description} {environment, select, development {\n### Stacktrace\n```{stack}```} other {}}",
-    "noMembersError": "Seems like there is no stored members for this guild. Try again later.",
-    "tooLargeError": "That number is way too large! Try with an smaller one.",
-    "leaderboardAndMore": "*And {amount} more...*",
-    "version": "Version",
-    "guildNotAllowedError": "This guild is not allowed to use this feature."
+    "error": {
+        "title": "⚠ This is awkward.",
+        "execution": "Could not execute this command due to an error.\n### {name} \n{description} {environment, select, development {\n### Stacktrace\n```prolog\n{stack}```} other {}}",
+        "guildNotAllowed": "This guild is not allowed to use this feature.",
+        "numberTooLarge": "That number is way too large! Try with an smaller one.",
+        "noMembers": "Seems like there is no stored members for this guild. Try again later.",
+        "triggerIllegalCharacter": "Whoops! Could not add trigger because it contains an illegal character. (`;`)",
+        "differentUser": "This prompt is not yours!",
+        "timedOut": "Prompt timed out!"
+    },
+    "leaderboard": {
+        "title": "Leaderboard",
+        "andMore": "*And {amount} more... 🤫*"
+    },
+    "settings": {
+        "title": "Settings",
+        "triggers": {
+            "title": "Triggers",
+            "emptyList": "No triggers set!",
+            "added": "Added {trigger} as an trigger.",
+            "buttons": {
+                "add": "Add Trigger",
+                "remove": "Remove Trigger"
+            },
+            "modal": {
+                "title": "Add Trigger",
+                "inputLabel": "String to check for"
+            }
+        },
+        "emoji": {
+            "listening": "Listening Emoji",
+            "pog": "Pog Emoji",
+            "prompt": "React to this message with the emoji you want Pogbot to react with.",
+            "done": "Done! Pogbot will react with {type, select, custom {custom emoji {emoji}} other {emoji {emoji}}}"
+        }
+    }
 }

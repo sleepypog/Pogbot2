@@ -6,7 +6,6 @@ export interface Command {
     guildOnly: boolean?,
     data: SlashCommandBuilder,
     execute: (i: CommandInteraction) => Promise<void>,
-    followUp: (i: Interaction) => Promise<void>
 }
 
 export interface PogListener {

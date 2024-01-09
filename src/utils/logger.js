@@ -2,6 +2,7 @@ import winston, { createLogger } from 'winston';
 
 import { Pogbot } from '../client.js';
 
+//TODO: Docs
 /*** @returns {import('winston').Logger} */
 export function getLogger() {
     return createLogger({
