@@ -1,0 +1,62 @@
+{
+    "triggerAdd": "Añadir gatillo",
+    "triggerRemove": "Eliminar gatillo",
+    "triggerAddTitle": "Añadir un gatillo",
+    "triggerRemoveTitle": "Eliminar un gatillo",
+    "triggerAddPromptLabel": "Gatillo a comprobar.",
+    "triggerAdded": "Se añadió `{trigger}` como un gatillo.",
+    "triggerRemoveEntry": "Eliminar esta entrada",
+    "triggerRemoveSelect": "Selecciona un gatillo que eliminar",
+    "triggerRemoved": "Se eliminó el gatillo `{trigger}`.",
+    "score": "Tienes {amount, plural, one {# pog} other {# pogs}} en este servidor.",
+    "about": {
+        "title": "About Pogbot",
+        "aboutPogbot": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
+        "guilds": "Guilds",
+        "uptime": "Uptime",
+        "version": "Version",
+        "environment": {
+            "title": "Environment",
+            "production": "Production :globe_with_meridians:",
+            "development": "Development :hammer_pick:"
+        }
+    },
+    "scoreEdited": "¡Listo! {user} ahora tiene {amount, plural, one {# pog} other {# pogs}}.",
+    "congratulations": "¡Enhorabuena! ¡Solo te tomó {time} para pogear!",
+    "error": {
+        "title": "⚠ This is awkward.",
+        "execution": "Could not execute this command due to an error.\n### {name} \n{description} {environment, select, development {\n### Stacktrace\n```prolog\n{stack}```} other {}}",
+        "guildNotAllowed": "This guild is not allowed to use this feature.",
+        "numberTooLarge": "That number is way too large! Try with an smaller one.",
+        "noMembers": "Seems like there is no stored members for this guild. Try again later.",
+        "triggerIllegalCharacter": "Whoops! Could not add trigger because it contains an illegal character. (`;`)",
+        "differentUser": "This prompt is not yours!",
+        "timedOut": "Prompt timed out!"
+    },
+    "leaderboard": {
+        "title": "Leaderboard",
+        "andMore": "*And {amount} more... 🤫*"
+    },
+    "settings": {
+        "title": "Settings",
+        "triggers": {
+            "title": "Triggers",
+            "emptyList": "No triggers set!",
+            "added": "Added {trigger} as an trigger.",
+            "buttons": {
+                "add": "Add Trigger",
+                "remove": "Remove Trigger"
+            },
+            "modal": {
+                "title": "Add Trigger",
+                "inputLabel": "String to check for"
+            }
+        },
+        "emoji": {
+            "listening": "Listening Emoji",
+            "pog": "Pog Emoji",
+            "prompt": "React to this message with the emoji you want Pogbot to react with.",
+            "done": "Done! Pogbot will react with {type, select, custom {custom emoji {emoji}} other {emoji {emoji}}}"
+        }
+    }
+}
