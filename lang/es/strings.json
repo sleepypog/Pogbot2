@@ -10,13 +10,13 @@
     "triggerRemoved": "Se eliminó el gatillo `{trigger}`.",
     "score": "Tienes {amount, plural, one {# pog} other {# pogs}} en este servidor.",
     "about": {
-        "title": "About Pogbot",
-        "aboutPogbot": "Pogbot is an open source bot created with the purpose of promoting competition within your community.",
-        "guilds": "Guilds",
-        "uptime": "Uptime",
-        "version": "Version",
+        "title": "Acerca de Pogbot",
+        "aboutPogbot": "Pogbot es un bot de código abierto creado con el propósito de promover la competencia dentro de tu comunidad.",
+        "guilds": "Servidores",
+        "uptime": "Tiempo de actividad",
+        "version": "Versión",
         "environment": {
-            "title": "Environment",
+            "title": "Entorno",
             "production": "Producción :globe_with_meridians:",
             "development": "Desarrollo :hammer_pick:"
         }
@@ -27,14 +27,14 @@
         "title": "⚠ Esto es incómodo.",
         "execution": "No se pudo ejecutar este comando debido a un error. \n### {name} \n{description} {environment, select, development {\n### Trazado de pila\n```prolog\n{stack}```} other {}}",
         "guildNotAllowed": "Este servidor no tiene permitido usar esta característica.",
-        "numberTooLarge": "That number is way too large! Try with an smaller one.",
-        "noMembers": "Seems like there is no stored members for this guild. Try again later.",
-        "triggerIllegalCharacter": "Whoops! Could not add trigger because it contains an illegal character. (`;`)",
-        "differentUser": "This prompt is not yours!",
-        "timedOut": "Prompt timed out!"
+        "numberTooLarge": "¡Ese número es demasiado grande! Prueba con uno más pequeño.",
+        "noMembers": "Parece que no hay miembros almacenados en este servidor. Inténtalo de nuevo más tarde.",
+        "triggerIllegalCharacter": "¡Ups! No se pudo añadir el gatillo porque contiene un carácter ilegal. (`;`)",
+        "differentUser": "¡Esta interacción no es para ti!",
+        "timedOut": "¡Se ha agotado el tiempo!"
     },
     "leaderboard": {
-        "title": "Leaderboard",
+        "title": "Tabla de posiciones",
         "andMore": "*Y {amount} más... 🤫*"
     },
     "settings": {
