@@ -1,45 +1,45 @@
 {
     "about": {
-        "description": "See information about Pogbot."
+        "description": "Ver información sobre Pogbot."
     },
     "debug": {
-        "description": "Internal debugging tools for Pogbot.",
+        "description": "Herramientas internas de depuración de Pogbot.",
         "dump": {
-            "description": "Dump player and guild information.",
+            "description": "Volcar la información del jugador y del servidor.",
             "subcommands": {
-                "me": "Dump your own data.",
-                "guild": "Dump guild data."
+                "me": "Volcar tus propios datos.",
+                "guild": "Volcar datos del servidor."
             }
         },
         "subcommands": {
-            "forceerror": "Force an error to test error handling."
+            "forceerror": "Forzar un error para probar el manejo de errores."
         }
     },
     "edit": {
-        "description": "Edit member scores.",
+        "description": "Editar puntajes de miembros.",
         "options": {
-            "member": "Member to edit scores for.",
-            "amount": "Number of pogs to add or remove from the member."
+            "member": "Miembro al que le editarás el puntaje.",
+            "amount": "Número de pogs a añadir o quitar del miembro."
         }
     },
     "leaderboard": {
-        "description": "See top scores for this guild."
+        "description": "Ver la tabla de posiciones de este servidor."
     },
     "score": {
-        "description": "See your score in this guild."
+        "description": "Ver tu puntaje en este servidor."
     },
     "settings": {
-        "description": "View and modify guild settings.",
+        "description": "Ver y modificar la configuración del servidor.",
         "emojis": {
-            "description": "Modify emoji reactions for this guild.",
+            "description": "Modifica las reacciones de emoji para este servidor.",
             "subcommands": {
-                "listening": "Modify the listening emoji.",
-                "pog": "Modify the pog emoji."
+                "listening": "Modifica el emoji de escucha.",
+                "pog": "Modifica el emoji de pog."
             }
         },
         "subcommands": {
-            "overview": "View guild settings.",
-            "triggers": "View and modify triggers for this guild."
+            "overview": "Ver configuración del servidor.",
+            "triggers": "Ver y modificar los gatillos de este servidor."
         }
     }
 }
